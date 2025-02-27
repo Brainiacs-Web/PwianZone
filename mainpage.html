@@ -8,7 +8,7 @@
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
-  <!-- Firebase SDK (Modular Imports) -->
+  <!-- Firebase & App JS (all in one module block) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
     import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
@@ -16,10 +16,10 @@
 
     // Firebase configuration – replace with your valid API key
     const firebaseConfig = {
-      apiKey: "YOUR_NEW_VALID_API_KEY",
+      apiKey: "AIzaSyAacOMpv-vRlSeZ3zWQiBvsJ1AFGJiRf3Y",
       authDomain: "login-b4550.firebaseapp.com",
       projectId: "login-b4550",
-      storageBucket: "login-b4550.appspot.com",
+      storageBucket: "login-b4550.firebasestorage.app",
       messagingSenderId: "862990443283",
       appId: "1:862990443283:web:643835db81d4bd1bcb70e6"
     };
@@ -28,23 +28,9 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    window.onload = function() {
-      const userData = JSON.parse(localStorage.getItem("user"));
-      if (!userData) {
-        signInWithGoogle();
-      } else {
-        displayUser(userData);
-      }
-      // Set the dark mode toggle icon based on saved preference
-      const darkModeToggle = document.getElementById("darkModeToggle");
-      if (localStorage.getItem("darkMode") === "true") {
-        document.body.classList.add("dark");
-        darkModeToggle.innerText = "☀️";
-      } else {
-        darkModeToggle.innerText = "🌙";
-      }
-    };
-
+    /**
+     * Signs the user in with Google and checks their username + enrollment.
+     */
     async function signInWithGoogle() {
       try {
         const provider = new GoogleAuthProvider();
@@ -56,30 +42,76 @@
           displayName: user.displayName 
         };
         localStorage.setItem("user", JSON.stringify(userData));
-        await checkUsername(user.uid);
+        // Hide the login overlay after successful sign in
+        document.getElementById('loginOverlay').style.display = "none";
+        // Check username and enrollment
+        await checkUsernameAndEnrollment(user.uid);
       } catch (error) {
         console.error("Sign-In Error:", error.message);
       }
     }
 
-    async function checkUsername(uid) {
+    /**
+     * Checks if the user's Firestore doc exists:
+     *  - If yes, stores the username (if any) and then checks enrollment.
+     *  - If no doc, prompts for username.
+     */
+    async function checkUsernameAndEnrollment(uid) {
       const userDoc = await getDoc(doc(db, "users", uid));
       if (userDoc.exists()) {
         const userData = JSON.parse(localStorage.getItem("user"));
-        userData.username = userDoc.data().username;
+        const docData = userDoc.data();
+        if (docData.username) {
+          userData.username = docData.username;
+        }
         localStorage.setItem("user", JSON.stringify(userData));
+        // If enrolled is true, redirect to Mytests.html
+        if (docData.enrolled) {
+          window.location.href = "Mytests.html";
+          return;
+        }
         displayUser(userData);
       } else {
         document.getElementById("usernameModal").style.display = "flex";
       }
     }
 
+    /**
+     * Displays the user's name in the navbar.
+     */
+    function displayUser(userData) {
+      const name = userData.username || userData.displayName;
+      document.getElementById("usernameDisplay").innerText = name;
+    }
+
+    // All DOM-related event listeners and Firebase actions are set up once the DOM is ready.
     document.addEventListener("DOMContentLoaded", () => {
+      // Check if the user is signed in
+      const userData = JSON.parse(localStorage.getItem("user"));
+      if (userData) {
+        checkUsernameAndEnrollment(userData.uid);
+      } else {
+        document.getElementById('loginOverlay').style.display = "flex";
+      }
+      
+      // Initialize dark mode toggle icon based on saved preference
+      const darkModeToggle = document.getElementById("darkModeToggle");
+      if (localStorage.getItem("darkMode") === "true") {
+        document.body.classList.add("dark");
+        darkModeToggle.innerHTML = "☀️";
+      } else {
+        darkModeToggle.innerHTML = "🌙";
+      }
+      
+      // Event Listeners
+      document.getElementById("googleSignIn").addEventListener("click", signInWithGoogle);
+
       document.getElementById("saveUsername").addEventListener("click", async () => {
         const username = document.getElementById("usernameInput").value.trim();
         const userData = JSON.parse(localStorage.getItem("user"));
         if (username && userData) {
-          await setDoc(doc(db, "users", userData.uid), { username });
+          // Merge so as not to overwrite other fields like enrollment
+          await setDoc(doc(db, "users", userData.uid), { username }, { merge: true });
           userData.username = username;
           localStorage.setItem("user", JSON.stringify(userData));
           displayUser(userData);
@@ -105,19 +137,19 @@
         }
       };
 
-      // Dark Mode Toggle with Emoji Switching
-      document.getElementById("darkModeToggle").addEventListener("click", () => {
-        const darkModeToggle = document.getElementById("darkModeToggle");
+      // Dark Mode Toggle
+      darkModeToggle.addEventListener("click", () => {
         document.body.classList.toggle("dark");
         if (document.body.classList.contains("dark")) {
           localStorage.setItem("darkMode", "true");
-          darkModeToggle.innerText = "☀️";
+          darkModeToggle.innerHTML = "☀️";
         } else {
           localStorage.removeItem("darkMode");
-          darkModeToggle.innerText = "🌙";
+          darkModeToggle.innerHTML = "🌙";
         }
       });
 
+      // Share icons
       document.querySelectorAll('.share-icon').forEach(icon => {
         icon.addEventListener('click', async () => {
           const shareData = {
@@ -141,12 +173,31 @@
           }
         });
       });
-    });
 
-    function displayUser(userData) {
-      const name = userData.username || userData.displayName;
-      document.getElementById("usernameDisplay").innerText = name;
-    }
+      // "Explore" button event
+      document.querySelectorAll('.explore').forEach(btn => {
+        btn.addEventListener('click', () => {
+          alert("Exploring course details...");
+        });
+      });
+
+      // "Enroll" button event
+      document.getElementById('enrollBtn').addEventListener('click', async () => {
+        const userData = JSON.parse(localStorage.getItem("user"));
+        if (!userData) {
+          alert("Please sign in first!");
+          return;
+        }
+        try {
+          const { uid } = userData;
+          await setDoc(doc(db, "users", uid), { enrolled: true }, { merge: true });
+          window.location.href = "Mytests.html";
+        } catch (err) {
+          console.error("Error enrolling user:", err);
+          alert("Failed to enroll. Please try again.");
+        }
+      });
+    });
   </script>
 
   <!-- Font Awesome -->
@@ -163,9 +214,9 @@
       --text-light: #333;
       --text-dark: #ccc;
       --card-bg-light: #fff;
-      --card-bg-dark: #333;
+      --card-bg-dark: #2b2b2b;
       --shadow-light: rgba(0, 0, 0, 0.1);
-      --shadow-dark: rgba(0, 0, 0, 0.3);
+      --shadow-dark: rgba(0, 0, 0, 0.4);
     }
 
     * {
@@ -179,8 +230,8 @@
       background: var(--bg-light);
       color: var(--text-light);
       transition: background 0.3s ease, color 0.3s ease;
+      min-height: 100vh;
     }
-
     body.dark {
       background: var(--bg-dark);
       color: var(--text-dark);
@@ -191,37 +242,34 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: var(--card-bg-light);
-      padding: 15px 20px;
-      box-shadow: 0 2px 8px var(--shadow-light);
+      padding: 15px 30px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: #fff;
       position: sticky;
       top: 0;
       z-index: 1000;
-      transition: background 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 2px 8px var(--shadow-light);
     }
-    body.dark .navbar {
-      background: var(--card-bg-dark);
-      box-shadow: 0 2px 8px var(--shadow-dark);
+    .navbar .brand {
+      font-size: 20px;
+      font-weight: 700;
     }
-    .dropdown {
-      background: #e0f7fa;
-      padding: 8px 18px;
-      border-radius: 25px;
-      cursor: pointer;
-      font-weight: 500;
-      font-size: 14px;
-      color: var(--secondary);
+    .navbar .controls {
+      display: flex;
+      align-items: center;
+      gap: 20px;
     }
-    /* Dark Mode Toggle (Emoji) on the left */
     .dark-mode-toggle {
       font-size: 20px;
       cursor: pointer;
-      margin-right: 15px;
+      transition: transform 0.2s ease;
     }
-    /* Updated Profile Icon */
+    .dark-mode-toggle:hover {
+      transform: scale(1.1);
+    }
     .profile-icon {
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
       background: var(--secondary);
       color: #fff;
       border-radius: 50%;
@@ -230,19 +278,21 @@
       align-items: center;
       font-size: 18px;
       cursor: pointer;
+      position: relative;
     }
 
     /* Profile Menu */
     .profile-menu {
       position: absolute;
       top: 60px;
-      right: 20px;
+      right: 30px;
       background: var(--card-bg-light);
       box-shadow: 0 4px 10px var(--shadow-light);
       border-radius: 8px;
       padding: 10px;
       display: none;
       text-align: center;
+      z-index: 1100;
     }
     body.dark .profile-menu {
       background: var(--card-bg-dark);
@@ -252,9 +302,6 @@
       margin: 5px 0;
       font-size: 14px;
       color: var(--secondary);
-    }
-    body.dark .profile-menu p {
-      color: var(--text-dark);
     }
     .logout-btn {
       background: #e53935;
@@ -275,56 +322,53 @@
     .container {
       padding: 30px 15px;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
       max-width: 1200px;
       margin: 0 auto;
     }
 
     /* Card Styling */
     .card {
-      width: 90%;
-      max-width: 550px;
       background: var(--card-bg-light);
-      margin: 20px 0;
+      width: 100%;
+      max-width: 350px;
       border-radius: 12px;
       box-shadow: 0 4px 12px var(--shadow-light);
-      padding: 20px;
+      overflow: hidden;
       transition: transform 0.3s ease, box-shadow 0.3s ease;
-      border-left: 4px solid var(--primary);
+      position: relative;
+      padding: 16px;
     }
     body.dark .card {
       background: var(--card-bg-dark);
-      color: var(--text-dark);
-      border-left-color: var(--primary);
       box-shadow: 0 4px 12px var(--shadow-dark);
     }
     .card:hover {
       transform: translateY(-5px);
       box-shadow: 0 6px 16px var(--shadow-light);
     }
-    .card img {
-      width: 100%;
-      border-radius: 8px;
-      margin-bottom: 15px;
-    }
-    .card h3 {
-      font-size: 20px;
-      margin-bottom: 10px;
-      font-weight: 500;
-      color: var(--text-light);
+
+    .card-top {
       display: flex;
       align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
+      justify-content: space-between;
+      margin-bottom: 12px;
     }
-    body.dark .card h3 {
-      color: #fff;
+    .card-top-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .card h3 {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0;
     }
     .new-tag {
-      background: #e3f2fd;
-      color: var(--primary);
+      background: #ffefc2;
+      color: #ff9800;
       padding: 3px 8px;
       font-size: 12px;
       border-radius: 20px;
@@ -332,7 +376,7 @@
     }
     body.dark .new-tag {
       background: #424242;
-      color: #90caf9;
+      color: #ffc107;
     }
     .share-icon {
       font-size: 18px;
@@ -343,16 +387,22 @@
     .share-icon:hover {
       transform: scale(1.1);
     }
+    .card img {
+      width: 100%;
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
     .card ul {
       list-style: none;
-      padding: 0;
-      margin: 10px 0;
+      margin: 12px 0;
+      padding-left: 0;
+      font-size: 14px;
     }
     .card ul li {
+      margin-bottom: 8px;
       display: flex;
       align-items: center;
-      margin: 8px 0;
-      font-size: 14px;
+      gap: 8px;
       color: var(--text-light);
     }
     body.dark .card ul li {
@@ -360,26 +410,24 @@
     }
     .card ul li i {
       color: #fdd835;
-      margin-right: 10px;
     }
     .price {
-      font-size: 20px;
-      color: var(--primary);
+      font-size: 18px;
+      color: #4caf50;
       font-weight: 500;
-      margin-top: 10px;
+      margin-top: 6px;
     }
     body.dark .price {
       color: #90caf9;
     }
     .buttons {
       display: flex;
-      justify-content: space-between;
-      margin-top: 15px;
       gap: 10px;
+      margin-top: 15px;
     }
     .buttons button {
       flex: 1;
-      padding: 12px;
+      padding: 10px;
       border: none;
       cursor: pointer;
       font-weight: 500;
@@ -416,6 +464,11 @@
       justify-content: center;
       align-items: center;
       z-index: 2000;
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
     .modal-content {
       background: var(--card-bg-light);
@@ -444,6 +497,7 @@
       margin: 10px 0;
       border: 1px solid #ddd;
       border-radius: 5px;
+      font-size: 14px;
     }
     .modal-content button {
       background: var(--primary);
@@ -452,24 +506,80 @@
       padding: 10px;
       border-radius: 5px;
       cursor: pointer;
+      font-size: 14px;
       transition: background 0.3s ease;
     }
     .modal-content button:hover {
       background: var(--primary-dark);
+    }
+
+    /* Login Overlay */
+    .login-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 3000;
+    }
+    .login-card {
+      background: var(--card-bg-light);
+      padding: 30px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 4px 12px var(--shadow-light);
+      max-width: 400px;
+      width: 90%;
+    }
+    body.dark .login-card {
+      background: var(--card-bg-dark);
+      box-shadow: 0 4px 12px var(--shadow-dark);
+    }
+    .google-signin-btn {
+      background: #fff;
+      color: #444;
+      border: 1px solid #ddd;
+      padding: 10px 20px;
+      border-radius: 4px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 20px auto 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: background 0.3s ease;
+    }
+    .google-signin-btn:hover {
+      background: #f7f7f7;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px 10px;
+      }
+      .navbar {
+        padding: 10px 20px;
+      }
     }
   </style>
 </head>
 <body>
 
   <!-- Navbar -->
-  <div class="navbar">
-    <!-- Dark mode toggle with emoji -->
-    <span class="dark-mode-toggle" id="darkModeToggle">🌙</span>
-    <div class="dropdown">Brainiacs</div>
-    <div class="profile-icon" id="profileIcon">
-      <i class="fas fa-user"></i>
+  <nav class="navbar">
+    <div class="brand">Brainiacs</div>
+    <div class="controls">
+      <span class="dark-mode-toggle" id="darkModeToggle">🌙</span>
+      <div class="profile-icon" id="profileIcon">
+        <i class="fas fa-user"></i>
+      </div>
     </div>
-  </div>
+  </nav>
 
   <!-- Profile Menu -->
   <div class="profile-menu" id="profileMenu">
@@ -486,43 +596,53 @@
     </div>
   </div>
 
-  <!-- Container -->
-  <div class="container">
-    <!-- Card 1 -->
-    <div class="card">
-      <img src="https://via.placeholder.com/500x250" alt="Test Series Image">
-      <h3>
-        NEET 8+1 ULTIMATE TEST SERIES
-        <span class="new-tag">NEW</span>
-        <i class="fab fa-whatsapp share-icon" title="Share Test Series"></i>
-      </h3>
-      <ul>
-        <li><i class="fas fa-star"></i> Unlimited attempts & leaderboard.</li>
-        <li><i class="fas fa-star"></i> Simulates actual exam environment.</li>
-        <li><i class="fas fa-star"></i> 75+ chapter-wise tests, 6+ full syllabus tests.</li>
-        <li><i class="fas fa-star"></i> Covers both part & full syllabus tests.</li>
-        <li><i class="fas fa-star"></i> Detailed Analysis provided.</li>
-      </ul>
-      <p class="price">₹ Free</p>
-      <div class="buttons">
-        <button class="explore">EXPLORE</button>
-        <button class="buy">ENROLL</button>
-      </div>
+  <!-- Login Overlay (shown if user not signed in) -->
+  <div id="loginOverlay" class="login-overlay">
+    <div class="login-card">
+      <h2>Welcome to Brainiacs Test Series</h2>
+      <button id="googleSignIn" class="google-signin-btn">
+        <i class="fab fa-google"></i> Sign in with Google
+      </button>
     </div>
   </div>
 
-  <!-- Additional JS for Buttons -->
-  <script>
-    document.querySelectorAll('.buy').forEach(btn => {
-      btn.addEventListener('click', () => {
-        alert("Redirecting to enrollment page...");
-      });
-    });
-    document.querySelectorAll('.explore').forEach(btn => {
-      btn.addEventListener('click', () => {
-        alert("Exploring course details...");
-      });
-    });
-  </script>
+  <!-- Container -->
+  <div class="container">
+    <!-- Card -->
+    <div class="card">
+      <!-- Top row: Title, "NEW" tag, Share icon -->
+      <div class="card-top">
+        <div class="card-top-left">
+          <h3>NEET 8+1 ULTIMATE TEST SERIES</h3>
+          <span class="new-tag">NEW</span>
+        </div>
+        <i class="fab fa-whatsapp share-icon" title="Share Test Series"></i>
+      </div>
+
+      <!-- Example Image -->
+      <img 
+        src="https://via.placeholder.com/500x250/8e44ad/ffffff?text=11th+JEE+RTS+2026" 
+        alt="Test Series Image"
+      />
+
+      <!-- Features list -->
+      <ul>
+        <li><i class="fas fa-star"></i> Unlimited attempts & leaderboard.</li>
+        <li><i class="fas fa-star"></i> Replicates the actual exam experience.</li>
+        <li><i class="fas fa-star"></i> 75+ chapter-wise tests, 6+ full syllabus tests.</li>
+        <li><i class="fas fa-star"></i> Covers part & full syllabus tests.</li>
+        <li><i class="fas fa-star"></i> Detailed Analysis provided.</li>
+      </ul>
+
+      <!-- Price row -->
+      <p class="price">₹ Free</p>
+
+      <!-- Buttons -->
+      <div class="buttons">
+        <button class="explore">EXPLORE</button>
+        <button class="buy" id="enrollBtn">Enroll</button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
