@@ -457,8 +457,10 @@
       });
     }
 
+    // Get the username from the URL parameters instead of prompting
     window.onload = () => {
-      const username = prompt("Enter your username:");
+      const urlParams = new URLSearchParams(window.location.search);
+      const username = urlParams.get("username");
       if (username) {
         displayResults(username.trim());
       } else {
