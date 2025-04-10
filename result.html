@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- Prevent zooming and scale layout properly -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Test Results</title>
+  
+  <!-- Import Poppins font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <style>
+    /* Base Reset & Fonts */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Poppins", sans-serif;
+    }
+    body {
+      background: linear-gradient(to bottom, #e0f2ff, #f7faff);
+      color: #333;
+      overflow-x: hidden;
+    }
+    /* Top Header Container */
+    .top-container {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 20px 30px;
+      margin-top: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .top-container h1 {
+      font-size: 2rem;
+      color: #007adf;
+    }
+    /* Main Container */
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    /* Total Result Summary */
+    #totalResult {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    #totalResult h2 {
+      font-size: 2rem;
+      color: #007adf;
+      margin-bottom: 10px;
+    }
+    .stats {
+      font-size: 1.1rem;
+      margin: 5px 0;
+      color: #444;
+    }
+    /* Overall Analysis Chart */
+    #overallChart {
+      max-width: 400px;
+      margin: 20px auto;
+    }
+    /* Horizontal Section Buttons (Subject Selector) */
+    #buttonsContainer {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    #buttonsContainer button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      border: 2px solid #56b4ef;
+      background: white;
+      color: #56b4ef;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    #buttonsContainer button.active-button {
+      background: #56b4ef;
+      color: white;
+    }
+    #buttonsContainer button:hover {
+      opacity: 0.9;
+    }
+    /* Section Result Details */
+    #sectionResult {
+      margin-top: 20px;
+    }
+    /* Subject Analysis Chart */
+    #subjectChart {
+      max-width: 400px;
+      margin: 20px auto;
+    }
+    /* Question Box */
+    .question-box {
+      text-align: left;
+      margin: 20px 0;
+      padding: 15px;
+      border-radius: 10px;
+      background: #f7faff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .question-box p {
+      margin-bottom: 10px;
+      font-size: 1.1rem;
+    }
+    .options {
+      list-style: none;
+      padding: 0;
+    }
+    .option-box {
+      padding: 12px;
+      margin: 6px 0;
+      border-radius: 6px;
+      border: 2px solid #ccc;
+      font-size: 1rem;
+      font-weight: bold;
+      background: white;
+      transition: 0.3s ease;
+      cursor: default;
+    }
+    .option-box.correct {
+      background: #d4edda !important;
+      border-color: #28a745 !important;
+      color: #155724;
+    }
+    .option-box:hover {
+      background: #e9ecef;
+    }
+    .selected-answer {
+      display: inline-block;
+      margin-top: 5px;
+      padding: 6px 10px;
+      border-radius: 5px;
+      font-weight: bold;
+      color: #fff;
+    }
+    .selected-correct {
+      background: #28a745;
+    }
+    .selected-wrong {
+      background: #dc3545;
+    }
+    .correct-answer {
+      display: inline-block;
+      margin-top: 5px;
+      padding: 6px 10px;
+      border-radius: 5px;
+      font-weight: bold;
+      color: #155724;
+      background: #d4edda;
+    }
+    .solution {
+      margin-top: 10px;
+      font-style: italic;
+      background: #f1f1f1;
+      padding: 10px;
+      border-left: 3px solid #007adf;
+    }
+    /* Responsive */
+    @media (max-width: 600px) {
+      .container {
+        width: 95%;
+        padding: 15px;
+      }
+      #buttonsContainer button {
+        font-size: 0.9rem;
+        padding: 8px 16px;
+      }
+      #totalResult h2 {
+        font-size: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Top Header -->
+  <div class="top-container">
+    <h1>Test Results</h1>
+  </div>
+  
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Total result summary and overall chart -->
+    <div id="totalResult">Calculating total result...</div>
+    <canvas id="overallChart"></canvas>
+    
+    <!-- Horizontal buttons for each section -->
+    <div id="buttonsContainer"></div>
+    
+    <!-- Section-specific detailed results and subject analysis chart -->
+    <div id="sectionResult">
+      <p>Select a section to view details.</p>
+      <canvas id="subjectChart"></canvas>
+    </div>
+  </div>
+  
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js";
+
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDFAzyQGNmOD6bmLnZH9evfL3V-PS4cajA",
+      authDomain: "arena-b8996.firebaseapp.com",
+      databaseURL: "https://arena-b8996-default-rtdb.firebaseio.com",
+      projectId: "arena-b8996",
+      storageBucket: "arena-b8996.appspot.com",
+      messagingSenderId: "188106766480",
+      appId: "1:188106766480:web:801e701f00151448090015"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Define the sections available
+    const sections = ["Physics", "Chemistry", "Biology"];
+
+    // Chart variables
+    let overallChart, subjectChart;
+
+    // Helper function to format text (replace URLs with images if needed)
+    function formatTextWithImages(text) {
+      if (!text) return text;
+      const urlRegex = /(https?:\/\/[^\s]+)/g;
+      return text.replace(urlRegex, (url) => `<img src="${url}" alt="Image" style="max-width:100%; border-radius:4px;">`);
+    }
+
+    // Update Overall Analysis Chart
+    function updateOverallChart(correct, wrong, unanswered) {
+      const ctx = document.getElementById('overallChart').getContext('2d');
+      const data = {
+        labels: ['Correct', 'Wrong', 'Unanswered'],
+        datasets: [{
+          data: [correct, wrong, unanswered],
+          backgroundColor: ['#28a745', '#dc3545', '#ffc107']
+        }]
+      };
+      if (overallChart) {
+        overallChart.data = data;
+        overallChart.update();
+      } else {
+        overallChart = new Chart(ctx, {
+          type: 'doughnut',
+          data: data,
+          options: {
+            plugins: {
+              title: {
+                display: true,
+                text: 'Overall Analysis'
+              }
+            }
+          }
+        });
+      }
+    }
+
+    // Update Subject Analysis Chart
+    function updateSubjectChart(correct, wrong, unanswered, section) {
+      const ctx = document.getElementById('subjectChart').getContext('2d');
+      const data = {
+        labels: ['Correct', 'Wrong', 'Unanswered'],
+        datasets: [{
+          data: [correct, wrong, unanswered],
+          backgroundColor: ['#28a745', '#dc3545', '#ffc107']
+        }]
+      };
+      if (subjectChart) {
+        subjectChart.data = data;
+        subjectChart.options.plugins.title.text = `${section} Analysis`;
+        subjectChart.update();
+      } else {
+        subjectChart = new Chart(ctx, {
+          type: 'doughnut',
+          data: data,
+          options: {
+            plugins: {
+              title: {
+                display: true,
+                text: `${section} Analysis`
+              }
+            }
+          }
+        });
+      }
+    }
+
+    // Function to fetch results for a specific section
+    async function fetchSectionResult(username, section) {
+      console.log(`Fetching user responses for ${section}...`);
+      let sectionScore = 0, correctCount = 0, wrongCount = 0, unansweredCount = 0;
+      let resultHTML = "";
+
+      // Updated: Fetch user responses from Part02
+      const userDocRef = doc(db, "Tests", "Part02", "usernames", username, "subjects", section);
+      const userDocSnap = await getDoc(userDocRef);
+      let userResponses = {};
+
+      if (userDocSnap.exists()) {
+        const userData = userDocSnap.data();
+        // Map all keys that start with "responses." to an object keyed by questionId
+        Object.keys(userData).forEach(key => {
+          if(key.startsWith("responses.")) {
+            const responseObj = userData[key];
+            if(responseObj && responseObj.questionId) {
+              userResponses[responseObj.questionId] = responseObj;
+            }
+          }
+        });
+        console.log(`Mapped user responses for ${section}:`, userResponses);
+      } else {
+        console.warn(`No responses found for ${section}.`);
+        return { 
+          resultHTML: `<p>No responses found for ${section}.</p>`,
+          sectionScore, correctCount, wrongCount, unansweredCount 
+        };
+      }
+
+      // Fetch questions for the section from: /Questions/Part01/{section}
+      const questionsRef = collection(db, "Questions", "Part01", section);
+      const questionsSnap = await getDocs(questionsRef);
+      if (questionsSnap.empty) {
+        console.warn(`No questions found for ${section}.`);
+        return { 
+          resultHTML: `<p>No questions found for ${section}.</p>`,
+          sectionScore, correctCount, wrongCount, unansweredCount 
+        };
+      }
+
+      let questionsArray = [];
+      questionsSnap.forEach((docSnap) => {
+        const questionData = docSnap.data();
+        questionsArray.push({
+          ...questionData,
+          addedAt: questionData.addedAt ? questionData.addedAt.toMillis() : 0,
+          id: docSnap.id
+        });
+      });
+      console.log(`Fetched ${questionsArray.length} questions for ${section}.`);
+
+      // Sort questions (by 'addedAt' descending)
+      questionsArray.sort((a, b) => b.addedAt - a.addedAt);
+
+      // Process each question
+      questionsArray.forEach((questionData) => {
+        const questionID = questionData.id;
+        const userResponse = userResponses[questionID];
+        if (!userResponse) return; // Skip if no response
+
+        const selectedAnswer = userResponse.selectedAnswer ? userResponse.selectedAnswer.trim().toUpperCase() : "";
+        const correctAnswer = questionData.correctAnswer ? questionData.correctAnswer.trim().toUpperCase() : "";
+        const options = questionData.options || [];
+        const solution = questionData.solution ? questionData.solution : "Solution not provided.";
+
+        let selectedAnswerHTML = "";
+        let correctAnswerHTML = `<span class="correct-answer">Correct Answer: ${correctAnswer}</span>`;
+
+        if (!selectedAnswer) {
+          unansweredCount++;
+          selectedAnswerHTML = `<span class="selected-answer selected-wrong">Not Answered</span>`;
+        } else if (selectedAnswer === correctAnswer) {
+          correctCount++;
+          sectionScore += 4;
+          selectedAnswerHTML = `<span class="selected-answer selected-correct">Your Answer: ${selectedAnswer}</span>`;
+        } else {
+          wrongCount++;
+          sectionScore -= 1;
+          selectedAnswerHTML = `<span class="selected-answer selected-wrong">Your Answer: ${selectedAnswer}</span>`;
+        }
+
+        resultHTML += `<div class="question-box">
+            <p><strong>Q:</strong> ${formatTextWithImages(questionData.question)}</p>
+            <ul class="options">`;
+        options.forEach((opt) => {
+          let optionClass = opt.trim().toUpperCase() === correctAnswer ? "correct" : "";
+          resultHTML += `<li class="option-box ${optionClass}">${formatTextWithImages(opt)}</li>`;
+        });
+        resultHTML += `</ul>
+                      ${selectedAnswerHTML}<br>
+                      ${selectedAnswer !== correctAnswer ? correctAnswerHTML : ""}
+                      <p class="solution"><strong>Solution:</strong> ${formatTextWithImages(solution)}</p>
+        </div>`;
+      });
+
+      return { resultHTML, sectionScore, correctCount, wrongCount, unansweredCount };
+    }
+
+    // Function to display results for all sections and the total summary
+    async function displayResults(username) {
+      console.log("Fetching results for all sections...");
+      let totalScore = 0, totalCorrect = 0, totalWrong = 0, totalUnanswered = 0;
+      const sectionResults = {};
+
+      // Fetch results for each section sequentially
+      for (const section of sections) {
+        const { resultHTML, sectionScore, correctCount, wrongCount, unansweredCount } = await fetchSectionResult(username, section);
+        sectionResults[section] = { resultHTML, sectionScore, correctCount, wrongCount, unansweredCount };
+        totalScore += sectionScore;
+        totalCorrect += correctCount;
+        totalWrong += wrongCount;
+        totalUnanswered += unansweredCount;
+      }
+
+      // Display total result summary
+      document.getElementById("totalResult").innerHTML = `
+        <h2>Total Marks: ${totalScore}</h2>
+        <p class="stats">Total Correct: ${totalCorrect}</p>
+        <p class="stats">Total Wrong: ${totalWrong}</p>
+        <p class="stats">Total Unanswered: ${totalUnanswered}</p>
+      `;
+      updateOverallChart(totalCorrect, totalWrong, totalUnanswered);
+
+      // Create horizontal buttons for each section
+      const buttonsContainer = document.getElementById("buttonsContainer");
+      buttonsContainer.innerHTML = "";
+      sections.forEach((section, index) => {
+        const btn = document.createElement("button");
+        btn.textContent = section;
+        btn.addEventListener("click", () => {
+          document.querySelectorAll("#buttonsContainer button").forEach(button => button.classList.remove("active-button"));
+          btn.classList.add("active-button");
+          const sectionData = sectionResults[section];
+          document.getElementById("sectionResult").innerHTML = `
+            <h3>${section} Results (Marks: ${sectionData.sectionScore})</h3>
+            <p class="stats">Correct: ${sectionData.correctCount}</p>
+            <p class="stats">Wrong: ${sectionData.wrongCount}</p>
+            <p class="stats">Unanswered: ${sectionData.unansweredCount}</p>
+            ${sectionData.resultHTML}
+            <canvas id="subjectChart"></canvas>
+          `;
+          // Update the subject analysis chart once the canvas is added
+          setTimeout(() => {
+            updateSubjectChart(sectionData.correctCount, sectionData.wrongCount, sectionData.unansweredCount, section);
+          }, 100);
+        });
+        buttonsContainer.appendChild(btn);
+        // Auto-click the first button by default
+        if (index === 0) {
+          btn.classList.add("active-button");
+          btn.click();
+        }
+      });
+    }
+
+    window.onload = () => {
+      const username = prompt("Enter your username:");
+      if (username) {
+        displayResults(username.trim());
+      } else {
+        document.getElementById("totalResult").innerHTML = "Username not provided.";
+      }
+    };
+  </script>
+</body>
+</html>
