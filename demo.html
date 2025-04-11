@@ -368,6 +368,12 @@
   </style>
 </head>
 <body>
+  <!-- Added tracking code: Set timestamp in localStorage to mark that this demo page has been visited -->
+  <script>
+    const now = new Date().getTime();
+    localStorage.setItem("visitedDemoPage", now);
+  </script>
+
   <!-- Top Header without hamburger button -->
   <div class="top-container">
     <div class="left-info">
