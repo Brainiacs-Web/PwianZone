@@ -686,44 +686,54 @@ window.toggleRadio = function(evt,qId) {
 };
 
 window.saveAndNext = function() {
-  // save numeric if present
+  // 1) Save any numeric/text answer
   const inp = document.getElementById("answer-input");
   if (inp) {
-    const key = `response_${currentSubject}_${currentChapter}_${questions[currentQuestionIndex].questionId}`;
-    inp.value.trim()
-      ? localStorage.setItem(key, inp.value.trim())
-      : localStorage.removeItem(key);
+    const qId = questions[currentQuestionIndex].questionId;
+    const key = `response_${currentSubject}_${currentChapter}_${qId}`;
+    if (inp.value.trim()) {
+      localStorage.setItem(key, inp.value.trim());
+    } else {
+      localStorage.removeItem(key);
+    }
   }
 
-  // save review flag
+  // 2) Save the “mark for review” checkbox
   const cb = document.getElementById("review-checkbox");
-  const rKey = `review_${currentSubject}_${currentChapter}_${questions[currentQuestionIndex].questionId}`;
-  cb.checked
-    ? localStorage.setItem(rKey,"true")
-    : localStorage.removeItem(rKey);
+  if (cb) {
+    const qId = questions[currentQuestionIndex].questionId;
+    const rKey = `review_${currentSubject}_${currentChapter}_${qId}`;
+    if (cb.checked) {
+      localStorage.setItem(rKey, "true");
+    } else {
+      localStorage.removeItem(rKey);
+    }
+  }
 
-  // next index or cycle
+  // 3) Advance within the current subject/chapter if possible
   if (currentQuestionIndex < questions.length - 1) {
     currentQuestionIndex++;
   } else {
-    const si = subjectsArray.indexOf(currentSubject);
-    currentSubject = subjectsArray[(si+1)%subjectsArray.length];
-    updateSubjectButtons();
-    if (testData.chapters?.[currentSubject]?.length) {
-      loadChapters(currentSubject);
-      return;
-    }
+    // 4) Otherwise, cycle to the next subject (this also resets questions & index)
+    const si      = subjectsArray.indexOf(currentSubject);
+    const nextSub = subjectsArray[(si + 1) % subjectsArray.length];
+    loadSubject(nextSub);
+    return;
   }
-  // ── mark this question visited when user moves forward
+
+  // 5) Mark the newly-shown question as visited
   const nextQ = questions[currentQuestionIndex];
   localStorage.setItem(
     `visited_${currentSubject}_${currentChapter}_${nextQ.questionId}`,
     "true"
   );
+
+  // 6) Re-render UI
   displayQuestion();
   updateNavInfo();
   updateProgress();
 };
+
 
 window.goToPrevious = function() {
   if (currentQuestionIndex > 0) {
