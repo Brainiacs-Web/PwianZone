@@ -819,7 +819,7 @@ table th {
   
       // ── Global window helpers ────────────────────────────────────────────────
       window.previewTest = id =>
-        window.location.href = `test_series_detail.html?test=${id}`;
+        window.location.href = `preview.html?test=${id}`;
       window.sendTest = async id => {
         if (!confirm("Send this test?")) return;
         await updateDoc(doc(db,"Questions",id), {
