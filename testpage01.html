@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- Prevent zooming and scale layout properly -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Test Page</title>
+  
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <!-- Import Poppins font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Firebase SDK (Modular version) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
+
+  <style>
+:root {
+  --primary: #1E40AF;
+  --accent: #2563EB;
+  --bg: #F8FAFC;
+  --text: #1F2937;
+  --shadow-light: rgba(0, 0, 0, 0.05);
+  --shadow-dark: rgba(0, 0, 0, 0.1);
+}
+
+/* Reset & Base */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: "Poppins", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* Top Container */
+.top-container {
+  width: 100%;
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 10px var(--shadow-light);
+  padding: 20px 30px;
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+}
+.left-info span {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--accent);
+}
+
+/* Timer & Submit */
+.timer {
+  font-size: 1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  color: var(--text);
+}
+.timer img {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}
+.submit-btn {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: #fff;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.submit-btn:hover {
+  background: linear-gradient(135deg, var(--accent), var(--primary));
+}
+
+/* Subject & Chapter Buttons */
+#subject-buttons,
+#chapter-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px auto;
+  max-width: 600px;
+}
+#subject-buttons button,
+#chapter-buttons button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: 2px solid var(--primary);
+  background: #fff;
+  color: var(--primary);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+#subject-buttons button.activeSubject,
+#chapter-buttons button.activeChapter {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+#subject-buttons button:hover,
+#chapter-buttons button:hover {
+  opacity: 0.9;
+}
+
+/* Main Exam Container */
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 20px;
+  min-height: 500px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px var(--shadow-light);
+}
+
+/* Question Card */
+.question-card {
+  padding: 20px 20px 20px 60px;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 8px var(--shadow-light);
+  margin-bottom: 20px;
+  position: relative;
+}
+.question-card .question-number {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.question-card .question-text {
+  font-size: 1.3rem;
+  margin-bottom: 20px;
+}
+
+/* Responsive Images */
+.question-image {
+  width: 100% !important;
+  height: auto !important;
+  display: block;
+  margin: 0 auto;
+}
+.option-image {
+  width: 100%;
+  max-width: 120px;
+  height: auto;
+  display: block;
+}
+
+/* Options */
+.option-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.image-option {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  border-radius: 6px;
+  background: #fff;
+  border: 2px solid transparent;
+  box-shadow: 0 2px 5px var(--shadow-light);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.image-option:hover,
+.image-option.selected {
+  border-color: var(--primary);
+  background: rgba(37, 99, 235, 0.1);
+}
+.image-option label {
+  width: 100%;
+  cursor: pointer;
+}
+.option-content {
+  font-size: 1rem;
+}
+
+/* Input Answer */
+.input-answer {
+  margin: 10px 0;
+}
+.input-answer label {
+  font-size: 1rem;
+  margin-right: 5px;
+}
+.input-answer input {
+  padding: 8px;
+  font-size: 1rem;
+  width: 100%;
+  max-width: 200px;
+}
+
+/* Review Checkbox */
+.review-container {
+  margin: 15px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.review-container label {
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+/* Navigation Buttons */
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 20px;
+}
+.button-container button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: #fff;
+  transition: background 0.3s ease;
+}
+.button-container button:hover {
+  background: linear-gradient(135deg, var(--accent), var(--primary));
+}
+
+/* Progress Modal */
+.progress-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 260px;
+  height: 100vh;
+  background: #fff;
+  box-shadow: -4px 0 12px var(--shadow-light);
+  padding: 20px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+.progress-modal header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+.progress-modal header h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+.progress-modal .close-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--text);
+}
+#question-progress {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-top: 15px;
+}
+#question-progress span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--text);
+  border-radius: 50%;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease, border 0.2s ease;
+  color: var(--text);
+}
+#question-progress span:hover {
+  transform: scale(1.1);
+}
+
+/* Modal Overlay */
+.modal-overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1100;
+  opacity: 0;
+  animation: fadeIn 0.3s forwards;
+}
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+.modal {
+  background: #fff;
+  width: 90%;
+  max-width: 500px;
+  padding: 30px 40px;
+  border-radius: 10px;
+  position: relative;
+  text-align: center;
+}
+.modal h2 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: var(--primary);
+  font-weight: 600;
+}
+.modal input[type="text"],
+.modal select {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+.continue-btn {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: #fff;
+  padding: 12px 30px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+  font-weight: 600;
+  box-shadow: 0 4px 10px var(--shadow-dark);
+}
+.continue-btn:hover {
+  background: linear-gradient(135deg, var(--accent), var(--primary));
+  transform: scale(1.05);
+}
+
+/* Hamburger Button */
+.hamburger-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 1.6rem;
+  background: transparent;
+  border: none;
+  color: var(--primary);
+  cursor: pointer;
+  outline: none;
+}
+
+</style>
+</head>
+<body>
+  <!-- Top Container: Exam Header -->
+  <div class="top-container">
+    <div class="left-info">
+      <div><strong>Batch</strong>: <span id="logged-batch">--</span></div>
+      <div><strong>Candidate Name</strong>: <span id="logged-username">--</span></div>
+      <div><strong>Test Name</strong>: <span id="test-name">--</span></div>
+      <div><strong>Subject</strong>: <span id="current-subject">--</span></div>
+      <div><strong>Chapter</strong>: <span id="current-chapter">--</span></div>
+      <div>
+        <strong>Question</strong>: 
+        <span id="current-question-index">0</span>/<span id="total-questions">0</span>
+      </div>
+    </div>
+    <div class="top-right">
+      <div class="timer" id="timer">
+        <img src="https://i.postimg.cc/Fs22Dm1C/timer-1.png" alt="Timer Icon">
+        <span id="time-left">00:00:00</span>
+      </div>
+      <button class="submit-btn" onclick="submitTest()">Submit Test</button>
+    </div>
+  </div>
+
+  <!-- Subject & Chapter Buttons -->
+  <div id="subject-buttons"></div>
+  <div id="chapter-buttons"></div>
+
+  <!-- Modal Overlay for Batch & Username -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+      <h2>Enter Batch & Username to Begin</h2>
+      <select id="batch">
+        <option value="" disabled selected>Select your batch</option>
+        <option value="Arjuna JEE">Arjuna JEE</option>
+        <option value="Lakshya JEE">Lakshya JEE</option>
+        <option value="Arjuna NEET">Arjuna NEET</option>
+        <option value="Lakshya NEET">Lakshya NEET</option>
+        <option value="Prayas JEE">Prayas JEE</option>
+      </select>      
+      <input type="text" id="username" placeholder="Enter your username">
+      <button class="continue-btn" onclick="validateCredentials()">Continue</button>
+    </div>
+  </div>
+
+  <!-- Main Exam Container -->
+  <div class="container" id="content" style="filter: blur(5px);">
+    <div class="question-card" id="question-card">
+      <button class="hamburger-btn" onclick="toggleProgress()">&#9776;</button>
+    </div>
+  </div>
+
+  <!-- Progress Modal -->
+  <div class="progress-modal" id="progress-modal">
+    <header>
+      <h3>Questions</h3>
+      <button class="close-btn" onclick="toggleProgress()">×</button>
+    </header>
+    <div id="question-progress"></div>
+    <button onclick="submitTest()">Submit Test</button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import {
+      getFirestore, doc, collection, getDoc, getDocs,
+      setDoc, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+
+    // --- Firebase Initialization ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyDOYPyulIXHzVhse8xWfpXoCBOkE3VSHts",
+      authDomain: "brainiacs-13a3f.firebaseapp.com",
+      projectId: "brainiacs-13a3f",
+      storageBucket: "brainiacs-13a3f.firebasestorage.app",
+      messagingSenderId: "530382354851",
+      appId: "1:530382354851:web:f65bde4a1b3f86d75d8216"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db  = getFirestore(app);
+
+    // --- Global State ---
+    const params = new URLSearchParams(window.location.search);
+    const testID = params.get("test") || "DefaultTest";
+
+    let batchName = "";
+    let username  = "";
+    let testData  = {};
+    let subjectsArray = [];
+    let questions = [];
+    let currentSubject      = "";
+    let currentChapter      = "";
+    let currentQuestionIndex = 0;
+    let timeLeft            = 90 * 60;
+    let timerInterval, tabSwitchCount = 0;
+    const maxTabSwitches = 5;
+
+    // --- 1) Batch & Username Login ---
+    window.validateCredentials = function() {
+      const b = document.getElementById("batch").value.trim();
+      const u = document.getElementById("username").value.trim();
+      if (!b || !u) {
+        return alert("Please enter both batch and username.");
+      }
+      batchName = b;
+      username  = u;
+      document.getElementById("logged-batch").textContent    = batchName;
+      document.getElementById("logged-username").textContent = username;
+      document.getElementById("modal-overlay").style.display = "none";
+      document.getElementById("content").style.filter        = "none";
+      alert(`Welcome, ${username} of batch ${batchName}`);
+      loadTestSeriesData();
+    };
+
+    // --- 2) Load Test Structure ---
+    async function loadTestSeriesData() {
+      try {
+        const testDocRef = doc(db, "Questions", testID);
+        const snap = await getDoc(testDocRef);
+        if (!snap.exists()) return alert("Test not found.");
+        testData = snap.data();
+        document.getElementById("test-name").textContent = testData.testName || testID;
+
+        // Subjects buttons
+        subjectsArray = testData.subjects || [];
+        const sCont = document.getElementById("subject-buttons");
+        sCont.innerHTML = "";
+        subjectsArray.forEach(sub => {
+          const btn = document.createElement("button");
+          btn.textContent = sub;
+          btn.onclick = () => loadSubject(sub);
+          sCont.appendChild(btn);
+        });
+        currentSubject = subjectsArray[0] || "";
+        updateSubjectButtons();
+
+        // Chapters for default subject
+        if (testData.chapters?.[currentSubject]?.length) {
+          loadChapters(currentSubject);
+        } else {
+          currentChapter = "";
+          document.getElementById("chapter-buttons").innerHTML = "";
+          updateNavInfo();
+          loadQuestions();
+        }
+
+        if (testData.testDuration) timeLeft = testData.testDuration * 60;
+        updateTimerDisplay();
+        startTimer();
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function loadSubject(sub) {
+      currentSubject = sub;
+      updateSubjectButtons();
+      if (testData.chapters?.[sub]?.length) {
+        loadChapters(sub);
+      } else {
+        currentChapter = "";
+        document.getElementById("chapter-buttons").innerHTML = "";
+        updateNavInfo();
+        loadQuestions();
+      }
+    }
+
+    function updateSubjectButtons() {
+      for (let btn of document.getElementById("subject-buttons").children) {
+        btn.classList.toggle("activeSubject", btn.textContent === currentSubject);
+      }
+    }
+
+    function loadChapters(subject) {
+      const cCont = document.getElementById("chapter-buttons");
+      cCont.innerHTML = "";
+      testData.chapters[subject].forEach(chap => {
+        const btn = document.createElement("button");
+        btn.textContent = chap;
+        btn.onclick = () => {
+          currentChapter = chap;
+          updateChapterButtons();
+          loadQuestions();
+        };
+        cCont.appendChild(btn);
+      });
+      currentChapter = testData.chapters[subject][0];
+      updateChapterButtons();
+      updateNavInfo();
+      loadQuestions();
+    }
+
+    function updateChapterButtons() {
+      for (let btn of document.getElementById("chapter-buttons").children) {
+        btn.classList.toggle("activeChapter", btn.textContent === currentChapter);
+      }
+    }
+
+    // --- 3) Load & Display Questions by Firestore ID ---
+    async function loadQuestions() {
+      const path = currentChapter
+        ? ["Questions", testID, currentSubject, currentChapter]
+        : ["Questions", testID, currentSubject];
+      const qSnap = await getDocs(collection(db, ...path));
+      questions = qSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      currentQuestionIndex = 0;
+      displayQuestion();
+      updateNavInfo();
+      updateProgress();
+    }
+
+    function displayQuestion() {
+      const q = questions[currentQuestionIndex];
+      if (!q) {
+        document.getElementById("question-card").innerHTML = "<p>No question.</p>";
+        return;
+      }
+      const isURL = str => /^(https?:\/\/.*\.(png|jpg|jpeg|gif|svg))$/i.test(str);
+      const saved = localStorage.getItem(`response_${currentSubject}_${currentChapter}_${q.id}`) || "";
+      const rev   = localStorage.getItem(`review_${currentSubject}_${currentChapter}_${q.id}`) === "true";
+
+      let html = `
+        <button class="hamburger-btn" onclick="toggleProgress()">&#9776;</button>
+        <p class="question-number">Question ${currentQuestionIndex + 1}</p>
+        <div class="question-text">
+          ${ isURL(q.question)
+              ? `<img src="${q.question}" class="question-image">`
+              : q.question
+          }
+        </div>
+        <div class="review-container">
+          <input type="checkbox" id="review-checkbox" ${rev ? "checked" : ""}>
+          <label for="review-checkbox">Mark as Review</label>
+        </div>
+        <div class="option-container">
+      `;
+
+      if (Array.isArray(q.options) && q.options.length) {
+        q.options.forEach((opt, i) => {
+          const val = String.fromCharCode(65 + i);
+          const checked = saved === val ? "checked" : "";
+          html += `
+            <div class="image-option">
+              <input 
+                type="radio"
+                name="opt_${q.id}"
+                id="opt_${q.id}_${i}"
+                value="${val}"
+                ${checked}
+                onchange="toggleRadio(event,'${q.id}')"
+              >
+              <label for="opt_${q.id}_${i}">
+                <div class="option-content">
+                  ${ isURL(opt)
+                      ? `<img src="${opt}" class="option-image">`
+                      : opt
+                  }
+                </div>
+              </label>
+            </div>
+          `;
+        });
+      } else {
+        html += `
+          <div class="input-answer">
+            <label>Your Answer:</label>
+            <input 
+              type="number" 
+              id="answer-input" 
+              value="${saved}" 
+            />
+          </div>
+        `;
+      }
+
+      html += `
+        </div>
+        <div class="button-container">
+          <button onclick="goToPrevious()">Previous</button>
+          <button onclick="saveAndNext()">Save & Next</button>
+        </div>
+      `;
+
+      document.getElementById("question-card").innerHTML = html;
+    }
+
+    window.toggleRadio = function(evt, qId) {
+      const val = evt.target.value;
+      const key = `response_${currentSubject}_${currentChapter}_${qId}`;
+      if (evt.target.checked) {
+        localStorage.setItem(key, val);
+      } else {
+        localStorage.removeItem(key);
+      }
+    };
+
+    window.saveAndNext = function() {
+      const q = questions[currentQuestionIndex];
+      // Save numeric if present
+      const inp = document.getElementById("answer-input");
+      if (inp) {
+        const key = `response_${currentSubject}_${currentChapter}_${q.id}`;
+        if (inp.value.trim()) {
+          localStorage.setItem(key, inp.value.trim());
+        } else {
+          localStorage.removeItem(key);
+        }
+      }
+      // Save review flag
+      const cb = document.getElementById("review-checkbox");
+      const rKey = `review_${currentSubject}_${currentChapter}_${q.id}`;
+      if (cb && cb.checked) {
+        localStorage.setItem(rKey, "true");
+      } else {
+        localStorage.removeItem(rKey);
+      }
+      // Next
+      if (currentQuestionIndex < questions.length - 1) {
+        currentQuestionIndex++;
+      } else {
+        // cycle to next subject/chapter
+        const si = subjectsArray.indexOf(currentSubject);
+        const nextSub = subjectsArray[(si + 1) % subjectsArray.length];
+        loadSubject(nextSub);
+        return;
+      }
+      displayQuestion();
+      updateNavInfo();
+      updateProgress();
+    };
+
+   window.goToPrevious = function () {
+      if (currentQuestionIndex > 0) {
+        currentQuestionIndex--;
+        displayQuestion();
+        updateProgress();
+      } else {
+        let currentSubjectIndex = subjects.indexOf(currentSubject);
+        if (currentSubjectIndex > 0) {
+          currentSubject = subjects[currentSubjectIndex - 1];
+          const prevCount = parseInt(localStorage.getItem(`questionCount_${currentSubject}`)) || 0;
+          if (!questionsBySubject[currentSubject]) {
+            fetchQuestions(currentSubject).then(() => {
+              currentQuestionIndex = (parseInt(localStorage.getItem(`questionCount_${currentSubject}`)) || 0) - 1;
+              displayQuestion();
+              updateProgress();
+            });
+            return;
+          } else {
+            currentQuestionIndex = (questionsBySubject[currentSubject].length) - 1;
+          }
+          displayQuestion();
+          updateProgress();
+          updateSubjectButtons();
+        } else {
+          alert("This is the first question!");
+        }
+      }
+    }; 
+    function updateNavInfo() {
+      document.getElementById("current-subject").textContent = currentSubject;
+      document.getElementById("current-chapter").textContent = currentChapter || "--";
+      document.getElementById("current-question-index").textContent = currentQuestionIndex + 1;
+      document.getElementById("total-questions").textContent = questions.length;
+    }
+
+    function updateProgress() {
+      const prog = document.getElementById("question-progress");
+      prog.innerHTML = "";
+      questions.forEach((q, i) => {
+        const span = document.createElement("span");
+        span.textContent = i + 1;
+        const key = `response_${currentSubject}_${currentChapter}_${q.id}`;
+        const revKey = `review_${currentSubject}_${currentChapter}_${q.id}`;
+        if (localStorage.getItem(key)) {
+          span.style.background = "#3f8e58";
+        } else if (localStorage.getItem(revKey)) {
+          span.style.background = "#b907ff";
+        } else if (localStorage.getItem(`visited_${currentSubject}_${currentChapter}_${q.id}`)) {
+          span.style.background = "red";
+        }
+        span.onclick = () => {
+          currentQuestionIndex = i;
+          displayQuestion();
+          updateNavInfo();
+          updateProgress();
+        };
+        prog.appendChild(span);
+      });
+    }
+
+    window.toggleProgress = () => {
+      const m = document.getElementById("progress-modal");
+      m.style.display = m.style.display === "block" ? "none" : "block";
+    };
+
+    // --- 4) Timer & Tab-switch Handling ---
+    function updateTimerDisplay() {
+      const h = String(Math.floor(timeLeft/3600)).padStart(2,'0');
+      const m = String(Math.floor((timeLeft%3600)/60)).padStart(2,'0');
+      const s = String(timeLeft%60).padStart(2,'0');
+      document.getElementById("time-left").textContent = `${h}:${m}:${s}`;
+    }
+    function startTimer() {
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        updateTimerDisplay();
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          submitTest(true);
+        }
+      }, 1000);
+    }
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        tabSwitchCount++;
+        if (tabSwitchCount >= maxTabSwitches) {
+          submitTest(true);
+        } else {
+          alert("Switching tabs will auto-submit after too many times.");
+        }
+      }
+    });
+
+    // --- 5) New Submission Logic ---
+    window.submitTest = async function(autoSubmit = false) {
+      if (!autoSubmit && !confirm("Are you sure you want to submit?")) return;
+
+      // Build: subjects → questionID → {questionId, selectedAnswer}
+      const responses = {};
+      await Promise.all(subjectsArray.map(async subject => {
+        const chaps = testData.chapters?.[subject]?.length
+                    ? testData.chapters[subject]
+                    : [""];
+        await Promise.all(chaps.map(async chap => {
+          const path = chap
+            ? ["Questions", testID, subject, chap]
+            : ["Questions", testID, subject];
+          const qSnap = await getDocs(collection(db, ...path));
+          const key = chap ? `${subject}_${chap}` : subject;
+          responses[key] = {};
+          qSnap.forEach(d => {
+            const qId = d.id;
+            const val = localStorage.getItem(`response_${subject}_${chap}_${qId}`) || null;
+            responses[key][qId] = { questionId: qId, selectedAnswer: val };
+          });
+        }));
+      }));
+
+      // Firestore path: Tests/{testID}/Batches/{batchName}/Users/{username}
+      const testRef  = doc(db, "Tests", testID);
+      const batchRef = doc(collection(testRef, "Batches"), batchName);
+      const userRef  = doc(collection(batchRef, "Users"), username);
+
+      await setDoc(userRef, {
+        subjects:  responses,
+        timestamp: serverTimestamp()
+      }, { merge: true });
+
+      localStorage.clear();
+      if (autoSubmit) {
+        alert("Auto-submitted.");
+        location.href = "results01.html";
+      } else {
+        alert("Submitted successfully!");
+        location.href = `results01.html?test=${testID}&batch=${batchName}&username=${username}`;      }
+    };
+
+    // Initialize page (only timer start; load waits for login)
+    window.onload = () => {};
+  </script>
+</body>
+</html>

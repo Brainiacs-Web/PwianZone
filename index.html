@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PWiansZone – Select Exam</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --primary: #1E40AF;
+      --accent: #2563EB;
+      --bg: #F8FAFC;
+      --text: #1F2937;
+      --shadow-light: rgba(0, 0, 0, 0.05);
+      --shadow-dark: rgba(0, 0, 0, 0.1);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Poppins", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 60px 20px;
+    }
+    h1 {
+      font-size: 2.75rem;
+      color: var(--primary);
+      margin-bottom: 32px;
+      font-weight: 700;
+    }
+    .controls {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .controls button {
+      padding: 12px 24px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--primary);
+      background: #fff;
+      border: 2px solid var(--primary);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.25s, color 0.25s, box-shadow 0.25s;
+    }
+    .controls button:hover {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 4px 12px var(--shadow-light);
+    }
+    .controls button.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+      box-shadow: 0 6px 16px var(--shadow-light);
+    }
+    .controls .icon-btn {
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      background: #fff;
+      border: 2px solid var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+    .controls .icon-btn:hover {
+      transform: rotate(15deg) scale(1.05);
+      box-shadow: 0 4px 12px var(--shadow-light);
+    }
+    .controls .icon-btn img {
+      width: 24px;
+      height: 24px;
+    }
+    .flash-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 32px;
+      width: 100%;
+      max-width: 920px;
+    }
+    .flash-card {
+      position: relative;
+      background: #fff;
+      border-left: 6px solid var(--primary);
+      border-radius: 12px;
+      padding: 32px 16px;
+      text-align: center;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--text);
+      box-shadow: 0 4px 16px var(--shadow-light);
+      overflow: hidden;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: fadeInUp 0.6s ease forwards;
+    }
+    .flash-card::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: var(--accent);
+      opacity: 0;
+      transform: translateY(-50%) rotate(45deg) scale(0);
+      transition: transform 0.4s ease, opacity 0.4s ease;
+    }
+    .flash-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 8px 24px var(--shadow-dark);
+    }
+    .flash-card:hover::before {
+      opacity: 0.1;
+      transform: translateY(-50%) rotate(45deg) scale(1);
+    }
+    .flash-card:nth-child(1) { animation-delay: 0.1s; }
+    .flash-card:nth-child(2) { animation-delay: 0.2s; }
+    .flash-card:nth-child(3) { animation-delay: 0.3s; }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--primary);
+      color: #fff;
+      padding: 14px 24px;
+      border-radius: 8px;
+      box-shadow: 0 4px 16px var(--shadow-dark);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      opacity: 0;
+      pointer-events: none;
+      animation: toastIn 0.4s forwards 0.2s;
+    }
+    #toast.hide { animation: toastOut 0.4s forwards; }
+    #toast .progress {
+      position: absolute;
+      bottom: 0; left: 0;
+      height: 4px;
+      background: var(--accent);
+      width: 100%;
+      animation: progressBar 5s linear forwards;
+    }
+    @keyframes toastIn {
+      from { opacity: 0; transform: translate(-50%, 40px); }
+      to   { opacity: 1; transform: translate(-50%, 0); }
+    }
+    @keyframes toastOut {
+      from { opacity: 1; transform: translate(-50%, 0); }
+      to   { opacity: 0; transform: translate(-50%, 40px); }
+    }
+    @keyframes progressBar {
+      to { width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <h1>PWiansZone</h1>
+  <div class="controls">
+    <button id="11thBtn">11th</button>
+    <button id="12thBtn">12th</button>
+    <button id="DropBtn">Dropper</button>
+    <div class="icon-btn" id="keyBtn">
+      <img id="lockIcon" src="https://i.postimg.cc/7hrpzw7g/secured-lock.png" alt="lock">
+    </div>
+  </div>
+
+  <div id="toast" role="alert" aria-live="assertive">
+    <span>🔔</span><span id="toastText"></span>
+    <div class="progress"></div>
+  </div>
+
+  <div class="flash-container" id="flashContainer"></div>
+
+  <script>
+    const EXP_MS = 12 * 60 * 60 * 1000;
+    const ts = +localStorage.getItem('keyTimestamp');
+    if (ts && Date.now() - ts > EXP_MS) {
+      localStorage.removeItem('keyID');
+      localStorage.removeItem('keyTimestamp');
+    }
+
+    const toast = document.getElementById('toast');
+    const toastText = document.getElementById('toastText');
+    function hideToast() {
+      toast.classList.add('hide');
+    }
+    window.addEventListener('load', () => {
+      const key = localStorage.getItem('keyID');
+      if (key) {
+        const rem = Math.max(EXP_MS - (Date.now() - ts), 0);
+        const hrs = Math.floor(rem / 3600000);
+        const mins = Math.floor((rem % 3600000) / 60000);
+        toastText.textContent = `Key valid for ${hrs}h ${mins}m`;
+      } else {
+        toastText.textContent = 'Generate your access key to unlock tests';
+      }
+      toast.style.opacity = 1;
+      toast.querySelector('.progress').addEventListener('animationend', hideToast);
+    });
+
+    const lockIcon = document.getElementById('lockIcon');
+    if (localStorage.getItem('keyID')) {
+      lockIcon.src = 'https://i.postimg.cc/0QwTrb6k/padlock-unlock.png';
+    }
+    document.getElementById('keyBtn').addEventListener('click', () => {
+      sessionStorage.setItem('fromLockClick', Date.now());
+      if (!localStorage.getItem('keyID')) {
+        location.href = 'key.html';
+      }
+    });
+
+    function redirectOrVisit(url) {
+      location.href = localStorage.getItem('keyID') ? url : 'visit.html';
+    }
+
+    const batches = {
+      "11th": [{ label: 'Arjuna JEE 1.0', url: 'Arjunajeetests.html' }],
+      "12th": [
+        { label: 'Lakshya JEE 1.0', url: 'Lakshyajeetests.html' },
+        { label: 'Parishram 2026', url: 'parishramtests.html' }
+      ],
+      Dropper: [{ label: 'Prayas JEE 1.0', url: 'prayasjeetests.html' }]
+    };
+
+    const buttons = document.querySelectorAll('.controls button');
+    buttons.forEach(btn =>
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      })
+    );
+
+    const container = document.getElementById('flashContainer');
+    function render(exam) {
+      container.innerHTML = '';
+      batches[exam].forEach((b, i) => {
+        const card = document.createElement('div');
+        card.className = 'flash-card';
+        card.textContent = b.label;
+        card.style.animationDelay = `${(i + 1) * 0.15}s`;
+        card.onclick = () => redirectOrVisit(b.url);
+        container.appendChild(card);
+      });
+    }
+
+    document.getElementById('11thBtn').onclick = () => render('11th');
+    document.getElementById('12thBtn').onclick = () => render('12th');
+    document.getElementById('DropBtn').onclick = () => render('Dropper');
+
+    // initialize
+    document.getElementById('11thBtn').classList.add('active');
+    render('11th');
+  </script>
+</body>
+</html>

@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#009688" />
+  <link rel="icon" sizes="192x192" href="icon-192.png">
+  <title>Test Series - PWiansZone</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <style>
+:root {
+  --primary-color: #1E40AF;        /* Primary blue */
+  --secondary-color: #2563EB;      /* Lighter blue for highlights */
+  --accent-color: #9333EA;         /* Purple accent for contrast */
+  --light-bg: #F1F5F9;             /* Light slate background */
+  --white: #ffffff;
+  --text-color: #1E293B;           /* Slate‑900 */
+  --card-shadow: rgba(0, 0, 0, 0.08);
+  --hover-bg: rgba(30, 64, 175, 0.05);
+}
+
+body.dark-mode {
+  --primary-color: #60A5FA;        /* Light blue */
+  --secondary-color: #3B82F6;      /* Slightly deeper */
+  --accent-color: #C084FC;         /* Light purple */
+  --light-bg: #0F172A;             /* Slate‑900 */
+  --white: #1E293B;                /* Slate‑800 */
+  --text-color: #E2E8F0;           /* Light text */
+  --card-shadow: rgba(0, 0, 0, 0.4);
+  --hover-bg: rgba(96, 165, 250, 0.1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background: var(--light-bg);
+  color: var(--text-color);
+  transition: background .3s, color .3s;
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  background: var(--white);
+  box-shadow: 0 4px 10px var(--card-shadow);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-input {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px 0 0 4px;
+  font-size: .9rem;
+  width: 180px;
+  max-width: 60vw;
+}
+
+.search-btn {
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-left: none;
+  border-radius: 0 4px 4px 0;
+  background: var(--primary-color);
+  color: var(--white);
+  cursor: pointer;
+}
+
+.dark-toggle {
+  font-size: 1.2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-color);
+  transition: color .3s;
+}
+
+.dark-toggle:hover {
+  color: var(--primary-color);
+}
+
+.main-content {
+  padding: 80px 20px 20px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.test-series h2 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: var(--primary-color);
+}
+
+.test-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--white);
+  box-shadow: 0 2px 6px var(--card-shadow);
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  transition: transform .2s;
+  cursor: pointer;
+}
+
+.test-card:hover {
+  transform: translateY(-3px);
+  background: var(--hover-bg);
+}
+
+.test-card.scheduled {
+  cursor: default;
+  transform: none;
+}
+
+.test-card h3 {
+  font-size: 1.2rem;
+  color: var(--secondary-color);
+}
+
+.test-card p {
+  font-size: .95rem;
+  margin-top: 4px;
+}
+
+.card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.syllabus-btn {
+  padding: 8px 14px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  background: var(--primary-color);
+  color: var(--white);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.syllabus-btn:hover {
+  background: var(--secondary-color);
+  transform: translateY(-1px);
+}
+
+.syllabus-btn:active {
+  transform: translateY(0);
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.modal-content {
+  background: var(--white);
+  width: 90%;
+  max-width: 500px;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  animation: slideDown 0.3s ease-out;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--primary-color);
+  color: var(--white);
+  padding: 12px 16px;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.close {
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 16px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.modal-body h4 {
+  margin-top: 12px;
+  margin-bottom: 6px;
+  color: var(--secondary-color);
+}
+
+.modal-body ul {
+  padding-left: 20px;
+  margin-bottom: 12px;
+}
+
+.modal-body li {
+  margin-bottom: 4px;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <header class="navbar">
+    <div class="logo">PWiansZone</div>
+    <div class="nav-right">
+      <input type="text" id="searchInput" class="search-input" placeholder="Search tests…" />
+      <button id="searchBtn" class="search-btn"><i class="fas fa-search"></i></button>
+      <button id="darkToggle" class="dark-toggle"><i class="fas fa-moon"></i></button>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <section class="test-series">
+      <h2 id="batchTitle">Loading batch…</h2>
+      <div id="testSeriesContainer">Loading tests…</div>
+    </section>
+  </main>
+
+  <div id="syllabusModal" class="modal" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="syllabusTitle">Syllabus</h3>
+        <span id="syllabusClose" class="close">&times;</span>
+      </div>
+      <div id="syllabusContent" class="modal-body">Loading…</div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script>
+    // ——— Utility to read ?params from URL ———
+    function getParam(name, defaultVal) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(name) || defaultVal;
+    }
+
+    // ——— Read batch info from URL (or fall back) ———
+    const batchId   = getParam('batchId',   'XNuKxEJib9qPGfBVWOHv');
+    const batchName = getParam('batchName', 'Lakshya Jee');
+    document.getElementById('batchTitle').textContent = batchName;
+
+    // ——— Firebase init ———
+    const firebaseConfig = {
+      apiKey: "AIzaSyDOYPyulIXHzVhse8xWfpXoCBOkE3VSHts",
+      authDomain: "brainiacs-13a3f.firebaseapp.com",
+      projectId: "brainiacs-13a3f",
+      storageBucket: "brainiacs-13a3f.appspot.com",
+      messagingSenderId: "530382354851",
+      appId: "1:530382354851:web:f65bde4a1b3f86d75d8216"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    const container   = document.getElementById("testSeriesContainer");
+    const searchBtn   = document.getElementById("searchBtn");
+    const searchInput = document.getElementById("searchInput");
+    let allTests = [];
+
+    function renderTests(list) {
+      container.innerHTML = "";
+      if (!list.length) {
+        container.textContent = "No tests match your search.";
+        return;
+      }
+      list.forEach(({ id, data }) => {
+        const card = document.createElement("div");
+        card.className = "test-card" + (data.published ? "" : " scheduled");
+
+        let schedHTML = "";
+        if (!data.published && data.scheduledAt) {
+          const d = data.scheduledAt.seconds
+            ? new Date(data.scheduledAt.seconds * 1000)
+            : new Date(data.scheduledAt);
+          if (d > new Date()) {
+            schedHTML = `<p style="color: var(--accent-color)">Starts on: ${d.toLocaleString()}</p>`;
+          }
+        }
+
+        card.innerHTML = `
+          <div>
+            <h3>${data.testName}</h3>
+            <p>Duration: ${data.testDuration} minutes</p>
+            <p>Subjects: ${data.subjects.join(", ")}</p>
+            ${schedHTML}
+            <div class="card-actions">
+              <button class="syllabus-btn">Syllabus</button>
+            </div>
+          </div>
+          <div>${data.published ? '<i class="fas fa-arrow-right"></i>' : ""}</div>
+        `;
+
+        if (data.published) {
+          card.addEventListener("click", () => {
+            const targetPage = "testpage.html";
+            const params = new URLSearchParams({
+              test: id,
+              batchId,
+              batchName
+            });
+            window.location.href = `${targetPage}?${params.toString()}`;
+          });
+        }
+
+        card.querySelector(".syllabus-btn")
+          .addEventListener("click", e => {
+            e.stopPropagation();
+            openSyllabusModal(data.testName, data.subjects);
+          });
+
+        container.appendChild(card);
+      });
+    }
+
+    // ——— Fetch tests for this batch ———
+    db.collection("Questions")
+      .where("batch", "==", batchId)
+      .get()
+      .then(snap => {
+        allTests = snap.docs
+          .map(d => ({ id: d.id, data: d.data() }))
+          .sort((a, b) => {
+            const ta = a.data.createdAt.seconds
+                     ? a.data.createdAt.seconds * 1000
+                     : new Date(a.data.createdAt).getTime();
+            const tb = b.data.createdAt.seconds
+                     ? b.data.createdAt.seconds * 1000
+                     : new Date(b.data.createdAt).getTime();
+            return tb - ta;
+          });
+        renderTests(allTests);
+      });
+
+    // ——— Search ———
+    function filterTests() {
+      const q = searchInput.value.trim().toLowerCase();
+      renderTests(q
+        ? allTests.filter(t => t.data.testName.toLowerCase().includes(q))
+        : allTests
+      );
+    }
+    searchBtn.addEventListener("click", filterTests);
+    searchInput.addEventListener("keypress", e => {
+      if (e.key === "Enter") filterTests();
+    });
+
+    // ——— Dark-mode ———
+    document.getElementById("darkToggle").addEventListener("click", () => {
+      document.body.classList.toggle("dark-mode");
+      const icon = document.body.classList.contains("dark-mode") ? "fa-sun" : "fa-moon";
+      document.getElementById("darkToggle")
+              .innerHTML = `<i class="fas ${icon}"></i>`;
+    });
+
+    // ——— Syllabus modal ———
+    const modal      = document.getElementById("syllabusModal");
+    const modalTitle = document.getElementById("syllabusTitle");
+    const modalBody  = document.getElementById("syllabusContent");
+    const modalClose = document.getElementById("syllabusClose");
+
+    modalClose.addEventListener("click", () => modal.style.display = "none");
+    window.addEventListener("click", e => {
+      if (e.target === modal) modal.style.display = "none";
+    });
+
+    function openSyllabusModal(testName, subjects) {
+      modalTitle.textContent = `Syllabus: ${testName}`;
+      modalBody.innerHTML = `<p>Loading chapters…</p>`;
+      modal.style.display = "flex";
+
+      const promises = subjects.map(subject =>
+        db.collection("Chapters")
+          .doc(testName)
+          .collection("Subjects")
+          .doc(subject)
+          .get()
+          .then(doc => {
+            if (doc.exists && Array.isArray(doc.data().chapters)) {
+              return { subject, chapters: doc.data().chapters };
+            } else {
+              return { subject, chapters: [], missing: true };
+            }
+          })
+      );
+
+      Promise.all(promises)
+        .then(results => {
+          let html = "";
+          results.forEach(r => {
+            html += `<h4>${r.subject}</h4>`;
+            if (r.chapters.length) {
+              html += "<ul>";
+              r.chapters.forEach(c => html += `<li>${c}</li>`);
+              html += "</ul>";
+            } else {
+              html += `<p style="color:var(--accent-color);">
+                         ${r.missing ? "No chapters found." : "No chapters listed."}
+                       </p>`;
+            }
+          });
+          modalBody.innerHTML = html;
+        })
+        .catch(err => {
+          console.error("Error fetching syllabus:", err);
+          modalBody.innerHTML = `<p style="color:red;">Failed to load syllabus.</p>`;
+        });
+    }
+  </script>
+</body>
+</html>

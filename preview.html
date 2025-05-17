@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <!-- Prevent zooming and scale layout properly -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Admin Preview - Test Series Detail</title>
+  
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+  <!-- Import Poppins font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Firebase SDK (Modular version) -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js"></script>
+
+  <style>
+:root {
+  --primary: #1E40AF;
+  --accent: #2563EB;
+  --bg: #F8FAFC;
+  --text: #1F2937;
+  --shadow-light: rgba(0, 0, 0, 0.05);
+  --shadow-dark: rgba(0, 0, 0, 0.1);
+  --danger: #DC2626;
+}
+
+/* Dark mode overrides */
+body.dark-mode {
+  --primary: #2563EB;
+  --accent: #1E40AF;
+  --bg: #1F2937;
+  --text: #F8FAFC;
+  --shadow-light: rgba(0, 0, 0, 0.2);
+  --shadow-dark: rgba(0, 0, 0, 0.4);
+  --danger: #F87171;
+}
+
+/* Reset & Base */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+body {
+  font-family: "Poppins", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  transition: background 0.3s, color 0.3s;
+}
+
+/* Top Container: Test Header */
+.top-container {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 10px var(--shadow-light);
+  padding: 20px 30px;
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.left-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.left-info span {
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--primary);
+}
+
+/* Subject Selector Row */
+#subject-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px auto;
+  max-width: 600px;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 10px 0;
+  scrollbar-width: thin;
+}
+#subject-buttons button {
+  flex: 0 0 auto;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: 2px solid var(--primary);
+  background: #fff;
+  color: var(--primary);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+}
+#subject-buttons button.activeSubject {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+#subject-buttons button:hover {
+  background: rgba(37, 99, 235, 0.1);
+}
+
+/* Preview Container */
+.preview-container {
+  display: flex;
+  max-width: 1200px;
+  margin: 20px auto;
+  gap: 20px;
+}
+
+/* Sidebar Questions */
+.sidebar-questions {
+  width: 250px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 8px var(--shadow-light);
+  max-height: 600px;
+  overflow-y: auto;
+}
+.sidebar-questions h3 {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+  text-align: center;
+  color: var(--primary);
+}
+.sidebar-questions ul {
+  list-style: none;
+}
+.sidebar-questions li {
+  padding: 8px;
+  border-bottom: 1px solid rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: background 0.2s;
+  color: var(--text);
+}
+.sidebar-questions li:hover {
+  background: rgba(37, 99, 235, 0.1);
+}
+.sidebar-questions li.active {
+  background: var(--primary);
+  color: #fff;
+}
+
+/* Main Content Container */
+.container {
+  flex: 1;
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 10px var(--shadow-light);
+}
+
+/* Question Card */
+.question-card {
+  padding: 20px;
+  padding-left: 60px;
+  border-radius: 8px;
+  background: var(--bg);
+  box-shadow: 0 2px 8px var(--shadow-light);
+  margin-bottom: 20px;
+  position: relative;
+}
+.question-card .question-number {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.question-card .question-text {
+  font-size: 1.3rem;
+  margin-bottom: 20px;
+}
+.question-image {
+  width: 100% !important;
+  height: auto !important;
+  display: block;
+  margin: 0 auto 20px;
+}
+
+/* Options List */
+.options-list {
+  margin: 10px 0;
+  padding-left: 20px;
+}
+.options-list li {
+  margin-bottom: 5px;
+  font-size: 1rem;
+  color: var(--text);
+}
+
+/* Inline Edit Inputs */
+.inline-input,
+.inline-select {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0 15px;
+  border: 1px solid rgba(0,0,0,0.2);
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+/* Edit & Delete Buttons */
+.edit-btn,
+.delete-btn {
+  position: absolute;
+  top: 10px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+  color: #fff;
+}
+.edit-btn {
+  right: 10px;
+  background: var(--accent);
+}
+.edit-btn:hover {
+  background: var(--primary);
+}
+.delete-btn {
+  right: 80px;
+  background: var(--danger);
+}
+.delete-btn:hover {
+  background: rgba(220, 38, 38, 0.8);
+}
+
+/* Navigation Buttons */
+.nav-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+.nav-buttons button {
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+.nav-buttons button:hover {
+  background: linear-gradient(135deg, var(--accent), var(--primary));
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .preview-container {
+    flex-direction: column;
+  }
+  .sidebar-questions {
+    width: 100%;
+    max-height: none;
+  }
+  .container {
+    padding: 10px;
+  }
+  .question-card {
+    padding: 15px;
+    padding-left: 15px;
+  }
+}
+
+
+  </style>
+</head>
+<body>
+  <!-- Top Container: Test Header -->
+  <div class="top-container">
+    <div class="left-info">
+      <div><strong>Test Name</strong>: <span id="test-name"></span></div>
+      <div><strong>Subject</strong>: <span id="current-subject">Loading...</span></div>
+      <div><strong>Question</strong>: <span id="current-question-index">0</span>/<span id="total-questions">0</span></div>
+    </div>
+    <div class="top-right">
+      <button onclick="loadQuestions()">Refresh Questions</button>
+    </div>
+  </div>
+
+  <!-- Subject Selector Row (Dynamically Loaded) -->
+  <div id="subject-buttons">
+    <!-- Subjects will be dynamically injected here -->
+  </div>
+
+  <!-- Main Preview Container: Sidebar + Question Preview -->
+  <div class="preview-container">
+    <!-- Navigation Sidebar / Question List -->
+    <div id="question-list" class="sidebar-questions">
+      <h3>Questions</h3>
+      <ul></ul>
+    </div>
+    
+    <!-- Main Container: Single Question Preview with Navigation -->
+    <div class="container" id="content">
+      <div id="question-card" class="question-card">
+        <!-- Question details will be rendered here -->
+      </div>
+      <div class="nav-buttons">
+        <button onclick="prevQuestion()">Previous</button>
+        <button onclick="nextQuestion()">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      updateDoc,
+      deleteField,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+  
+    // ── Firebase Initialization ────────────────────────────────────────────────
+    const firebaseConfig = {
+      apiKey: "AIzaSyDOYPyulIXHzVhse8xWfpXoCBOkE3VSHts",
+      authDomain: "brainiacs-13a3f.firebaseapp.com",
+      projectId: "brainiacs-13a3f",
+      storageBucket: "brainiacs-13a3f.firebasestorage.app",
+      messagingSenderId: "530382354851",
+      appId: "1:530382354851:web:f65bde4a1b3f86d75d8216"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db  = getFirestore(app);
+  
+    // ── State & URL ───────────────────────────────────────────────────────────
+    const params   = new URLSearchParams(window.location.search);
+    const testName = params.get("test") || "DefaultTest";
+    document.getElementById("test-name").textContent = testName;
+  
+    let subjectsArray = [], 
+        currentSubject = "", 
+        questions = [], 
+        currentQuestionIndex = 0, 
+        isEditing = false,
+        undoStack = [], 
+        redoStack = [];
+  
+    // ── 1) Load Subjects ───────────────────────────────────────────────────────
+    async function loadSubjects() {
+      const snap = await getDoc(doc(db, "Questions", testName));
+      if (!snap.exists()) {
+        document.getElementById("subject-buttons").innerHTML = "<p>Test not found.</p>";
+        return;
+      }
+      subjectsArray = snap.data().subjects || [];
+      const sb = document.getElementById("subject-buttons");
+      sb.innerHTML = "";
+      subjectsArray.forEach(sub => {
+        const btn = document.createElement("button");
+        btn.textContent = sub;
+        btn.onclick = () => loadSubject(sub);
+        sb.appendChild(btn);
+      });
+      if (subjectsArray.length) loadSubject(subjectsArray[0]);
+      else sb.innerHTML = "<p>No subjects defined.</p>";
+    }
+  
+    // ── 2) Switch Subject ──────────────────────────────────────────────────────
+    function loadSubject(sub) {
+      currentSubject = sub;
+      updateSubjectButtons();
+      loadQuestions();
+    }
+    function updateSubjectButtons() {
+      Array.from(document.getElementById("subject-buttons").children)
+        .forEach(b => b.classList.toggle("activeSubject", b.textContent === currentSubject));
+      document.getElementById("current-subject").textContent = currentSubject;
+    }
+  
+    // ── 3) Load Questions (single doc per subject) ─────────────────────────────
+    async function loadQuestions() {
+      const subjRef = doc(db, "Questions", testName, "Subjects", currentSubject);
+      const subjSnap = await getDoc(subjRef);
+      const qMap = subjSnap.exists() ? subjSnap.data().questions || {} : {};
+      questions = Object.entries(qMap).map(([id, q]) => ({ id, ...q }));
+      currentQuestionIndex = 0;
+      isEditing = false;
+      undoStack = [];
+      redoStack = [];
+      renderQuestionList();
+      renderQuestion();
+      updateNavInfo();
+    }
+  
+    // ── 4) Render Question List ────────────────────────────────────────────────
+    function renderQuestionList() {
+      const ul = document.querySelector("#question-list ul");
+      ul.innerHTML = "";
+      questions.forEach((q,i) => {
+        const li = document.createElement("li");
+        li.textContent = "Q" + (i+1);
+        li.onclick = () => { 
+          currentQuestionIndex = i; 
+          isEditing = false; 
+          renderQuestion(); 
+          updateNavInfo(); 
+        };
+        if (i === currentQuestionIndex) li.classList.add("active");
+        ul.appendChild(li);
+      });
+    }
+  
+    // ── 5) Render Single Question ──────────────────────────────────────────────
+    function renderQuestion() {
+      const container = document.getElementById("question-card");
+      if (!questions.length) {
+        container.innerHTML = "<p>No questions.</p>";
+        return;
+      }
+      const q = questions[currentQuestionIndex];
+      let html = `<p class="question-number">Question ${currentQuestionIndex+1}</p>`;
+  
+      if (isEditing) {
+        // Inline edit form
+        html += `
+          <div><label>Text:</label>
+            <input id="editQ" type="text" value="${q.question||""}"/>
+          </div>
+          <div><label>Image URL:</label>
+            <input id="editQI" type="text" value="${q.questionImage||""}"/>
+          </div>
+          <div><label>Type:</label>
+            <select id="editQT">
+              <option value="MCQ"${q.questionType==="MCQ"?" selected":""}>MCQ</option>
+              <option value="Integer"${q.questionType==="Integer"?" selected":""}>Integer</option>
+            </select>
+          </div>
+        `;
+        if (q.questionType==="MCQ") {
+          ["A","B","C","D"].forEach((opt,i) => {
+            html += `
+              <div><label>Opt ${opt}:</label>
+                <input id="editO${opt}" type="text" value="${(q.options||[])[i]||""}"/>
+              </div>
+            `;
+          });
+          html += `
+            <div><label>Correct:</label>
+              <select id="editCA">
+                <option value="">--</option>
+                ${["A","B","C","D"].map(opt=>
+                  `<option value="${opt}"${q.correctAnswer===opt?" selected":""}>${opt}</option>`
+                ).join("")}
+              </select>
+            </div>
+          `;
+        } else {
+          html += `
+            <div><label>Answer:</label>
+              <input id="editInt" type="number" value="${q.answer||""}"/>
+            </div>
+          `;
+        }
+        html += `
+          <div><label>Solution:</label>
+            <input id="editS" type="text" value="${q.solution||""}"/>
+          </div>
+          <div><label>Sol Image:</label>
+            <input id="editSI" type="text" value="${q.solutionImage||""}"/>
+          </div>
+          <div style="margin-top:10px;">
+            <button onclick="undoInlineEdit()">Undo</button>
+            <button onclick="redoInlineEdit()">Redo</button>
+            <button onclick="saveInlineEdit()">Save</button>
+          </div>
+        `;
+        container.innerHTML = html;
+        Array.from(container.querySelectorAll("input,select"))
+          .forEach(el=>el.addEventListener("change", pushState));
+        pushState();
+      } else {
+        // Display mode
+        html += `<div class="question-text">${q.question||""}</div>`;
+        if (q.questionImage) html += `<img src="${q.questionImage}" class="question-image">`;
+        if (q.questionType==="MCQ") {
+          html += `<ol type="A">${(q.options||[]).map(o=>`<li>${o}</li>`).join("")}</ol>`;
+          html += `<p><strong>Correct:</strong> ${q.correctAnswer}</p>`;
+        } else {
+          html += `<p><strong>Answer:</strong> ${q.answer}</p>`;
+        }
+        html += `<p><strong>Solution:</strong> ${q.solution||""}</p>`;
+        if (q.solutionImage) html += `<img src="${q.solutionImage}" class="question-image">`;
+        html += `
+          <div style="margin-top:10px;">
+            <button onclick="deleteQuestion()">Delete</button>
+            <button onclick="enterEditMode()">Edit</button>
+          </div>
+        `;
+        container.innerHTML = html;
+      }
+  
+      updateNavInfo();
+      renderQuestionList();
+    }
+  
+    // ── 6) Undo/Redo Helpers ──────────────────────────────────────────────────
+    function captureState() {
+      return {
+        question:      document.getElementById("editQ")?.value||"",
+        questionImage: document.getElementById("editQI")?.value||"",
+        questionType:  document.getElementById("editQT")?.value||"",
+        options:       ["A","B","C","D"].map(opt=>document.getElementById("editO"+opt)?.value||""),
+        correctAnswer: document.getElementById("editCA")?.value||"",
+        answer:        document.getElementById("editInt")?.value||"",
+        solution:      document.getElementById("editS")?.value||"",
+        solutionImage: document.getElementById("editSI")?.value||""
+      };
+    }
+    function applyState(s) {
+      document.getElementById("editQ").value  = s.question;
+      document.getElementById("editQI").value = s.questionImage;
+      document.getElementById("editQT").value = s.questionType;
+      ["A","B","C","D"].forEach((opt,i)=>
+        document.getElementById("editO"+opt).value = s.options[i]||""
+      );
+      document.getElementById("editCA").value = s.correctAnswer;
+      if (document.getElementById("editInt"))
+        document.getElementById("editInt").value = s.answer;
+      document.getElementById("editS").value  = s.solution;
+      document.getElementById("editSI").value = s.solutionImage;
+    }
+    function pushState() {
+      undoStack.push(captureState());
+      redoStack = [];
+    }
+    function undoInlineEdit() {
+      if (undoStack.length<2) return alert("No more undo");
+      const last = undoStack.pop();
+      redoStack.push(last);
+      applyState(undoStack[undoStack.length-1]);
+    }
+    function redoInlineEdit() {
+      if (!redoStack.length) return alert("No more redo");
+      const s = redoStack.pop();
+      undoStack.push(s);
+      applyState(s);
+    }
+  
+    // ── 7) Save Edits ──────────────────────────────────────────────────────────
+    async function saveInlineEdit() {
+      const q = questions[currentQuestionIndex];
+      const data = {
+        question:      document.getElementById("editQ").value.trim(),
+        questionImage: document.getElementById("editQI").value.trim(),
+        questionType:  document.getElementById("editQT").value,
+        solution:      document.getElementById("editS").value.trim(),
+        solutionImage: document.getElementById("editSI").value.trim(),
+        updatedAt:     serverTimestamp()
+      };
+      if (data.questionType==="MCQ") {
+        data.options = ["A","B","C","D"].map(opt=>
+          document.getElementById("editO"+opt).value.trim()
+        );
+        data.correctAnswer = document.getElementById("editCA").value;
+      } else {
+        data.answer = document.getElementById("editInt").value.trim();
+      }
+      const subjRef = doc(db, "Questions", testName, "Subjects", currentSubject);
+      const entry  = { questionId: q.id, ...data };
+      await updateDoc(subjRef, { [`questions.${q.id}`]: entry });
+      isEditing = false;
+      loadQuestions();
+    }
+  
+    // ── 8) Delete Question ─────────────────────────────────────────────────────
+    async function deleteQuestion() {
+      if (!confirm("Delete this question?")) return;
+      const q = questions[currentQuestionIndex];
+      const subjRef = doc(db, "Questions", testName, "Subjects", currentSubject);
+      await updateDoc(subjRef, { [`questions.${q.id}`]: deleteField() });
+      loadQuestions();
+    }
+  
+    // ── 9) Navigation ─────────────────────────────────────────────────────────
+    function prevQuestion() {
+      if (currentQuestionIndex>0) {
+        currentQuestionIndex--;
+        isEditing = false;
+        renderQuestion();
+        updateNavInfo();
+      }
+    }
+    function nextQuestion() {
+      if (currentQuestionIndex<questions.length-1) {
+        currentQuestionIndex++;
+        isEditing = false;
+        renderQuestion();
+        updateNavInfo();
+      }
+    }
+    function updateNavInfo() {
+      document.getElementById("current-question-index").textContent = currentQuestionIndex+1;
+      document.getElementById("total-questions").textContent        = questions.length;
+    }
+  
+    // ── Initialize on load ────────────────────────────────────────────────────
+    document.addEventListener("DOMContentLoaded", loadSubjects);
+  
+    // ── Expose inline handlers ────────────────────────────────────────────────
+    window.enterEditMode   = () => { isEditing = true; renderQuestion(); };
+    window.prevQuestion    = prevQuestion;
+    window.nextQuestion    = nextQuestion;
+    window.saveInlineEdit  = saveInlineEdit;
+    window.deleteQuestion  = deleteQuestion;
+    window.undoInlineEdit  = undoInlineEdit;
+    window.redoInlineEdit  = redoInlineEdit;
+    window.loadSubject     = loadSubject;
+  </script>
+  
+</body>
+</html>
