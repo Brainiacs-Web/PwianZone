@@ -335,20 +335,15 @@ a {
         // —— Dual-redirect logic with batch params ——
         if (data.published) {
           card.addEventListener("click", () => {
-            const name = data.testName.trim().toLowerCase();
-            const targetPage = (name === "short practice test - 01")
-                             ? "testpage01.html"
-                             : "testpage.html";
-
+            const targetPage = "testpage.html";
             const params = new URLSearchParams({
-              test:      id,
-              batchId:   batchId,
-              batchName: batchName
+              test: id,
+              batchId,
+              batchName
             });
-
             window.location.href = `${targetPage}?${params.toString()}`;
           });
-        }
+    }
 
         // Syllabus button
         card.querySelector(".syllabus-btn")
