@@ -575,33 +575,48 @@ function updateChapterButtons() {
 
 // --- 3) Fetch & Render Questions ---
 async function loadQuestions() {
-  // Fetch the subject’s questions
-  const subjDoc = doc(db, "Questions", testID, "Subjects", currentSubject);
-  const snap    = await getDoc(subjDoc);
-  const qMap    = snap.exists() ? snap.data().questions || {} : {};
-  questions     = Object.values(qMap);
+  try {
+    // 1) Fetch all questions for the current subject
+    const subjDoc = doc(db, "Questions", testID, "Subjects", currentSubject);
+    const snap    = await getDoc(subjDoc);
+    const qMap    = snap.exists() ? snap.data().questions || {} : {};
+    questions     = Object.values(qMap);
 
-  // If a chapter is selected, filter down by chapter
-  if (currentChapter) {
-    questions = questions.filter(q => q.chapter === currentChapter);
+    // 2) If a chapter is selected, narrow down
+    if (currentChapter) {
+      questions = questions.filter(q => q.chapter === currentChapter);
+    }
+
+    // 3) Sort so that integer‐answer questions (no options array) go last
+    questions.sort((a, b) => {
+      const aIsInteger = !Array.isArray(a.options) || a.options.length === 0;
+      const bIsInteger = !Array.isArray(b.options) || b.options.length === 0;
+      if (aIsInteger && !bIsInteger) return 1;   // a after b
+      if (!aIsInteger && bIsInteger) return -1;  // a before b
+      return 0;  // otherwise keep original order
+    });
+
+    // 4) Reset to the first question
+    currentQuestionIndex = 0;
+
+    // 5) Mark first question as visited immediately
+    if (questions.length > 0) {
+      const firstQ = questions[0];
+      localStorage.setItem(
+        `visited_${currentSubject}_${currentChapter}_${firstQ.questionId}`,
+        "true"
+      );
+    }
+
+    // 6) Render
+    displayQuestion();
+    updateNavInfo();
+    updateProgress();
+
+  } catch (e) {
+    console.error("Error loading questions:", e);
+    alert("Failed to load questions. See console for details.");
   }
-
-  // Always start on the first question
-  currentQuestionIndex = 0;
-
-  // ── Mark that first question as “visited” right away
-  if (questions.length > 0) {
-    const firstQ = questions[0];
-    localStorage.setItem(
-      `visited_${currentSubject}_${currentChapter}_${firstQ.questionId}`,
-      "true"
-    );
-  }
-
-  // Render the UI
-  displayQuestion();
-  updateNavInfo();
-  updateProgress();
 }
 
 
