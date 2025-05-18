@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Site Under Maintenance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f3f4f6;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #1f2937;
+      margin-bottom: 0.5em;
+    }
+
+    p {
+      font-size: 1.2rem;
+      color: #4b5563;
+      margin-bottom: 2em;
+    }
+
+    img {
+      max-width: 100%;
+      width: 300px;
+      height: auto;
+      margin-bottom: 30px;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2rem;
+      }
+
+      p {
+        font-size: 1rem;
+      }
+
+      img {
+        width: 250px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <img src="https://i.postimg.cc/8zZmvMz1/Animation-1747222290116.gif" alt="Maintenance GIF">
+  <h1>We're Under Maintenance</h1>
+  <p>Our site is temporarily down while we make improvements. We'll be back shortly!</p>
+
+  <script>
+    // Prevent back navigation
+    history.pushState(null, null, window.location.href);
+    window.onpopstate = function () {
+      history.go(1);
+    };
+  </script>
+</body>
+</html>
