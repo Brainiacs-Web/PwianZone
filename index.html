@@ -1,272 +1,504 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PWiansZone – Select Exam</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
   <style>
     :root {
-      --primary: #1E40AF;
-      --accent: #2563EB;
-      --bg: #F8FAFC;
-      --text: #1F2937;
-      --shadow-light: rgba(0, 0, 0, 0.05);
-      --shadow-dark: rgba(0, 0, 0, 0.1);
+      --clr-primary: #1e40af;
+      --clr-accent: #2563eb;
+      --clr-bg: #f3f4f6;
+      --clr-surface: #fff;
+      --clr-text: #1f2937;
+      --clr-text-secondary: #4b5563;
+      --clr-border: #e5e7eb;
+      --clr-shadow: rgba(0,0,0,0.05);
+
+      --ff-base: "Poppins", sans-serif;
+      --fs-sm: .875rem;
+      --fs-base: 1rem;
+      --fs-lg: 1.125rem;
+      --fs-xl: 2rem;
+      --fw-regular: 400;
+      --fw-semibold: 600;
+      --fw-bold: 700;
+
+      --space-xxs: 4px;
+      --space-xs: 8px;
+      --space-sm: 12px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      --space-xxl: 48px;
+
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+
+      --shadow-light: 0 1px 3px var(--clr-shadow);
+      --shadow-medium: 0 4px 12px var(--clr-shadow);
+
+      --trans-fast: .2s ease-in-out;
+      --trans-medium: .4s ease-in-out;
+      --ease-std: cubic-bezier(.4,0,.2,1);
+
+      --delay-step: .1s;
     }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html {
+      font-size: 100%;
+      scroll-behavior: smooth;
+    }
     body {
-      font-family: "Poppins", sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      font-family: var(--ff-base);
+      font-size: var(--fs-base);
+      background: var(--clr-bg);
+      color: var(--clr-text);
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
+      line-height: 1.5;
+    }
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+    button {
+      border: none;
+      background: none;
+      cursor: pointer;
+      font: inherit;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    header.header {
+      position: sticky;
+      top: 0;
+      background: var(--clr-surface);
+      border-bottom: 1px solid var(--clr-border);
+      box-shadow: var(--shadow-light);
+      z-index: 100;
+    }
+    .header .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: var(--space-sm) var(--space-xl);
+      display: flex;
       align-items: center;
-      min-height: 100vh;
-      padding: 60px 20px;
+      justify-content: space-between;
     }
-    h1 {
-      font-size: 2.75rem;
-      color: var(--primary);
-      margin-bottom: 32px;
-      font-weight: 700;
+    .logo {
+      font-size: var(--fs-xl);
+      font-weight: var(--fw-bold);
+      color: var(--clr-primary);
+      letter-spacing: 1px;
     }
+    .unlock-btn {
+      display: flex;
+      align-items: center;
+      background: var(--clr-accent);
+      color: var(--clr-surface);
+      padding: var(--space-sm) var(--space-lg);
+      border-radius: var(--radius-md);
+      font-weight: var(--fw-semibold);
+      transition: background var(--trans-fast), box-shadow var(--trans-fast);
+    }
+    .unlock-btn:hover {
+      background: var(--clr-primary);
+      box-shadow: var(--shadow-medium);
+    }
+    .unlock-btn .material-icons {
+      margin-right: var(--space-xs);
+    }
+
+    .main {
+      flex: 1;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: var(--space-xxl) var(--space-md);
+    }
+
     .controls {
       display: flex;
-      gap: 16px;
-      margin-bottom: 40px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--space-lg);
     }
-    .controls button {
-      padding: 12px 24px;
-      font-size: 1rem;
-      font-weight: 600;
-      color: var(--primary);
-      background: #fff;
-      border: 2px solid var(--primary);
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background 0.25s, color 0.25s, box-shadow 0.25s;
+    .tabs {
+      display: flex;
+      gap: var(--space-md);
+      flex-wrap: wrap;
     }
-    .controls button:hover {
-      background: var(--primary);
-      color: #fff;
-      box-shadow: 0 4px 12px var(--shadow-light);
+    .tab-btn {
+      background: var(--clr-surface);
+      color: var(--clr-text-secondary);
+      padding: var(--space-sm) var(--space-xl);
+      font-weight: var(--fw-semibold);
+      border: 2px solid var(--clr-border);
+      border-radius: var(--radius-md);
+      transition: all var(--trans-fast);
     }
-    .controls button.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
-      box-shadow: 0 6px 16px var(--shadow-light);
+    .tab-btn:hover {
+      background: var(--clr-bg);
     }
-    .controls .icon-btn {
-      width: 44px;
-      height: 44px;
-      padding: 0;
-      background: #fff;
-      border: 2px solid var(--primary);
-      border-radius: 50%;
+    .tab-btn.active {
+      background: var(--clr-accent);
+      border-color: var(--clr-accent);
+      color: var(--clr-surface);
+      box-shadow: var(--shadow-light);
+      transform: translateY(-2px);
+    }
+    .lock-desktop {
+      display: flex;
+      align-items: center;
+    }
+    .icon-btn {
+      background: var(--clr-surface);
+      border: 2px solid var(--clr-border);
+      border-radius: var(--radius-md);
+      width: 48px;
+      height: 48px;
       display: flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      transition: transform 0.25s, box-shadow 0.25s;
+      transition: box-shadow var(--trans-fast);
     }
-    .controls .icon-btn:hover {
-      transform: rotate(15deg) scale(1.05);
-      box-shadow: 0 4px 12px var(--shadow-light);
+    .icon-btn:hover {
+      box-shadow: var(--shadow-light);
     }
-    .controls .icon-btn img {
-      width: 24px;
-      height: 24px;
+    .icon-btn.click-animate {
+      animation: clickScale .6s ease-in-out forwards;
     }
+    @keyframes clickScale {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.4); }
+      100% { transform: scale(1); }
+    }
+
     .flash-container {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 32px;
-      width: 100%;
-      max-width: 920px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--space-lg);
+      margin-bottom: var(--space-xxl);
     }
     .flash-card {
-      position: relative;
-      background: #fff;
-      border-left: 6px solid var(--primary);
-      border-radius: 12px;
-      padding: 32px 16px;
+      background: var(--clr-surface);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-light);
+      backdrop-filter: blur(8px);
+      padding: var(--space-lg) var(--space-sm);
       text-align: center;
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--text);
-      box-shadow: 0 4px 16px var(--shadow-light);
-      overflow: hidden;
+      font-size: var(--fs-lg);
+      font-weight: var(--fw-semibold);
+      color: var(--clr-text);
       cursor: pointer;
+      position: relative;
+      overflow: hidden;
       opacity: 0;
-      transform: translateY(24px);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      animation: fadeInUp 0.6s ease forwards;
+      transform: perspective(600px) rotateX(20deg) scale(0.8);
+      animation: popIn .8s cubic-bezier(.34,1.56,.64,1) forwards;
     }
-    .flash-card::before {
-      content: "";
-      position: absolute;
-      top: 50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: var(--accent);
-      opacity: 0;
-      transform: translateY(-50%) rotate(45deg) scale(0);
-      transition: transform 0.4s ease, opacity 0.4s ease;
+    .flash-card[data-index="1"] {
+      animation-delay: calc(var(--delay-step) * 1);
     }
-    .flash-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 8px 24px var(--shadow-dark);
+    .flash-card[data-index="2"] {
+      animation-delay: calc(var(--delay-step) * 2);
     }
-    .flash-card:hover::before {
-      opacity: 0.1;
-      transform: translateY(-50%) rotate(45deg) scale(1);
+    .flash-card[data-index="3"] {
+      animation-delay: calc(var(--delay-step) * 3);
     }
-    .flash-card:nth-child(1) { animation-delay: 0.1s; }
-    .flash-card:nth-child(2) { animation-delay: 0.2s; }
-    .flash-card:nth-child(3) { animation-delay: 0.3s; }
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(40px); }
-      to   { opacity: 1; transform: translateY(0); }
+    .flash-card[data-index="4"] {
+      animation-delay: calc(var(--delay-step) * 4);
     }
-    #toast {
+    .flash-card[data-index="5"] {
+      animation-delay: calc(var(--delay-step) * 5);
+    }
+    @keyframes popIn {
+      0% {
+        opacity: 0;
+        transform: perspective(600px) rotateX(20deg) scale(0.8);
+      }
+      60% {
+        opacity: 1;
+        transform: perspective(600px) rotateX(-5deg) scale(1.05);
+      }
+      100% {
+        opacity: 1;
+        transform: perspective(600px) rotateX(0deg) scale(1);
+      }
+    }
+
+    #overlay {
       position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--primary);
-      color: #fff;
-      padding: 14px 24px;
-      border-radius: 8px;
-      box-shadow: 0 4px 16px var(--shadow-dark);
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(255,255,255,0.9);
       display: flex;
       align-items: center;
-      gap: 12px;
+      justify-content: center;
       opacity: 0;
       pointer-events: none;
-      animation: toastIn 0.4s forwards 0.2s;
+      transition: opacity .6s ease-in-out;
+      z-index: 200;
     }
-    #toast.hide { animation: toastOut 0.4s forwards; }
+    #overlay.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    #overlayText {
+      font-size: 2.5rem;
+      font-weight: var(--fw-bold);
+      color: var(--clr-primary);
+    }
+    #overlayText.animate {
+      animation: textScaleFade 1s ease-in-out forwards;
+    }
+    @keyframes textScaleFade {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    #toast {
+      position: fixed;
+      bottom: var(--space-lg);
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--clr-primary);
+      color: var(--clr-surface);
+      padding: var(--space-sm) var(--space-lg);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-medium);
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--trans-medium);
+      z-index: 150;
+    }
+    #toast.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
     #toast .progress {
       position: absolute;
       bottom: 0; left: 0;
-      height: 4px;
-      background: var(--accent);
-      width: 100%;
+      width: 100%; height: 3px;
+      background: var(--clr-accent);
       animation: progressBar 5s linear forwards;
     }
-    @keyframes toastIn {
-      from { opacity: 0; transform: translate(-50%, 40px); }
-      to   { opacity: 1; transform: translate(-50%, 0); }
-    }
-    @keyframes toastOut {
-      from { opacity: 1; transform: translate(-50%, 0); }
-      to   { opacity: 0; transform: translate(-50%, 40px); }
-    }
     @keyframes progressBar {
-      to { width: 0; }
+      to {
+        width: 0;
+      }
+    }
+
+    button:focus,
+    a:focus {
+      outline: 3px solid var(--clr-accent);
+      outline-offset: 2px;
+    }
+
+    @media (max-width: 768px) {
+      .tabs {
+        gap: var(--space-sm);
+      }
+      .tab-btn {
+        padding: var(--space-xs) var(--space-md);
+        font-size: var(--fs-sm);
+      }
+      .lock-desktop {
+        display: none;
+      }
+      /* mobile lock removed—no display:flex here */
+      .flash-container {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      }
+      .flash-card {
+        padding: var(--space-md) var(--space-xs);
+        font-size: var(--fs-sm);
+      }
     }
   </style>
 </head>
 <body>
-  <h1>PWiansZone</h1>
-  <div class="controls">
-    <button id="11thBtn">11th</button>
-    <button id="12thBtn">12th</button>
-    <button id="DropBtn">Dropper</button>
-    <div class="icon-btn" id="keyBtn">
-      <img id="lockIcon" src="https://i.postimg.cc/7hrpzw7g/secured-lock.png" alt="lock">
+  <header class="header">
+    <div class="container">
+      <div class="logo">PWiansZone</div>
+      <button id="unlockHeaderBtn" class="unlock-btn">
+        <span class="material-icons">lock_open</span> Unlock Access
+      </button>
     </div>
+  </header>
+
+  <div id="overlay">
+    <span id="overlayText">Unlocking…</span>
   </div>
 
+  <main class="main">
+    <section class="select-exam" aria-labelledby="selectExamHeading">
+      <h2 id="selectExamHeading"
+          style="font-size: var(--fs-xl); font-weight: var(--fw-bold); text-align:center; margin-bottom: var(--space-lg);">
+        Select Your Exam
+      </h2>
+      <div class="controls">
+        <div class="tabs" aria-label="Exam categories">
+          <button id="tab-11th" class="tab-btn active">11th Grade</button>
+          <button id="tab-12th" class="tab-btn">12th Grade</button>
+          <button id="tab-dropper" class="tab-btn">Dropper</button>
+        </div>
+        <div class="lock-desktop">
+          <button id="lockBtnDesktop" class="icon-btn" aria-label="Unlock Access">
+            <span class="material-icons">lock</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="flash-container" id="flashContainer" aria-live="polite">
+      <!-- cards injected here -->
+    </section>
+  </main>
+
   <div id="toast" role="alert" aria-live="assertive">
-    <span>🔔</span><span id="toastText"></span>
+    <span class="material-icons">notifications</span>
+    <span id="toastText"></span>
     <div class="progress"></div>
   </div>
 
-  <div class="flash-container" id="flashContainer"></div>
-
   <script>
-    const EXP_MS = 12 * 60 * 60 * 1000;
-    const ts = +localStorage.getItem('keyTimestamp');
-    if (ts && Date.now() - ts > EXP_MS) {
-      localStorage.removeItem('keyID');
-      localStorage.removeItem('keyTimestamp');
+    const EXP_MS = 12*60*60*1000;
+    const storedTs = +localStorage.getItem("keyTimestamp");
+    if (storedTs && Date.now() - storedTs > EXP_MS) {
+      localStorage.removeItem("keyID");
+      localStorage.removeItem("keyTimestamp");
     }
 
-    const toast = document.getElementById('toast');
-    const toastText = document.getElementById('toastText');
-    function hideToast() {
-      toast.classList.add('hide');
+    const toast = document.getElementById("toast"),
+          toastText = document.getElementById("toastText");
+    function showToast(msg) {
+      toastText.textContent = msg;
+      toast.classList.add("visible");
+      setTimeout(() => toast.classList.remove("visible"), 5000);
     }
-    window.addEventListener('load', () => {
-      const key = localStorage.getItem('keyID');
-      if (key) {
-        const rem = Math.max(EXP_MS - (Date.now() - ts), 0);
-        const hrs = Math.floor(rem / 3600000);
-        const mins = Math.floor((rem % 3600000) / 60000);
-        toastText.textContent = `Key valid for ${hrs}h ${mins}m`;
+    window.addEventListener("load", () => {
+      const keyID = localStorage.getItem("keyID");
+      if (keyID) {
+        const rem = Math.max(EXP_MS - (Date.now() - storedTs), 0),
+              hrs = Math.floor(rem/3600000),
+              mins = Math.floor((rem%3600000)/60000);
+        showToast(`Access key valid for ${hrs}h ${mins}m`);
       } else {
-        toastText.textContent = 'Generate your access key to unlock tests';
+        showToast("Generate your access key to unlock tests");
       }
-      toast.style.opacity = 1;
-      toast.querySelector('.progress').addEventListener('animationend', hideToast);
+      updateUnlockButtonText();
     });
 
-    const lockIcon = document.getElementById('lockIcon');
-    if (localStorage.getItem('keyID')) {
-      lockIcon.src = 'https://i.postimg.cc/0QwTrb6k/padlock-unlock.png';
+    const unlockHeaderBtn = document.getElementById("unlockHeaderBtn");
+    function updateUnlockButtonText() {
+      const unlocked = !!localStorage.getItem("keyID"),
+            w = window.innerWidth,
+            text = unlocked
+              ? (w<768 ? "Unlocked" : "Access Unlocked")
+              : (w<768 ? "Locked"   : "Unlock Access"),
+            icon = unlocked ? "" : '<span class="material-icons">lock_open</span>&nbsp;';
+      unlockHeaderBtn.innerHTML = icon + text;
     }
-    document.getElementById('keyBtn').addEventListener('click', () => {
-      sessionStorage.setItem('fromLockClick', Date.now());
-      if (!localStorage.getItem('keyID')) {
-        location.href = 'key.html';
-      }
-    });
+    window.addEventListener("resize", updateUnlockButtonText);
 
-    function redirectOrVisit(url) {
-      location.href = localStorage.getItem('keyID') ? url : 'visit.html';
+    const lockBtnDesktop = document.getElementById("lockBtnDesktop"),
+          overlay        = document.getElementById("overlay"),
+          overlayText    = document.getElementById("overlayText");
+
+    function updateLockIcons() {
+      if (localStorage.getItem("keyID")) {
+        lockBtnDesktop.querySelector(".material-icons").textContent = "lock_open";
+      }
     }
+    updateLockIcons();
+
+    function handleLockClick(e) {
+      if (localStorage.getItem("keyID")) return;
+      e.currentTarget.classList.add("click-animate");
+      overlay.classList.add("visible");
+      overlayText.textContent = "Unlocking…";
+      overlayText.classList.add("animate");
+      setTimeout(() => location.href = "key.html", 1000);
+    }
+    unlockHeaderBtn.addEventListener("click", handleLockClick);
+    lockBtnDesktop.addEventListener("click", handleLockClick);
 
     const batches = {
-      "11th": [{ label: 'Arjuna JEE 1.0', url: 'Arjunajeetests.html' }],
+      "11th": [{label:"Arjuna JEE 1.0",url:"Arjunajeetests.html"}],
       "12th": [
-        { label: 'Lakshya JEE 1.0', url: 'lakshyajeetests.html' },
-        { label: 'Parishram 2026', url: 'parishramtests.html' }
+        {label:"Lakshya JEE 1.0",url:"lakshyajeetests.html"},
+        {label:"Parishram 2026",url:"parishramtests.html"}
       ],
-      Dropper: [{ label: 'Prayas JEE 1.0', url: 'prayasjeetests.html' }]
+      dropper: [{label:"Prayas JEE 1.0",url:"prayasjeetests.html"}]
     };
+    const tabMap = {
+      "tab-11th":"11th",
+      "tab-12th":"12th",
+      "tab-dropper":"dropper"
+    };
+    const tabButtons = document.querySelectorAll(".tab-btn"),
+          flashContainer = document.getElementById("flashContainer");
 
-    const buttons = document.querySelectorAll('.controls button');
-    buttons.forEach(btn =>
-      btn.addEventListener('click', () => {
-        buttons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-      })
-    );
-
-    const container = document.getElementById('flashContainer');
-    function render(exam) {
-      container.innerHTML = '';
-      batches[exam].forEach((b, i) => {
-        const card = document.createElement('div');
-        card.className = 'flash-card';
-        card.textContent = b.label;
-        card.style.animationDelay = `${(i + 1) * 0.15}s`;
-        card.onclick = () => redirectOrVisit(b.url);
-        container.appendChild(card);
+    function clearActiveTabs() {
+      tabButtons.forEach(b=>b.classList.remove("active"));
+    }
+    function renderCards(cat) {
+      flashContainer.innerHTML = "";
+      batches[cat].forEach((item,i) => {
+        const card = document.createElement("div");
+        card.className = "flash-card";
+        card.dataset.index = i+1;
+        card.tabIndex = 0;
+        card.textContent = item.label;
+        card.addEventListener("click", () => {
+          overlay.classList.add("visible");
+          overlayText.textContent = item.label;
+          overlayText.classList.add("animate");
+          setTimeout(() => {
+            const dest = localStorage.getItem("keyID") ? item.url : "visit.html";
+            location.href = dest;
+          }, 1000);
+        });
+        card.addEventListener("keydown", e => {
+          if (e.key === "Enter" || e.key === " ") card.click();
+        });
+        flashContainer.appendChild(card);
       });
     }
 
-    document.getElementById('11thBtn').onclick = () => render('11th');
-    document.getElementById('12thBtn').onclick = () => render('12th');
-    document.getElementById('DropBtn').onclick = () => render('Dropper');
-
-    // initialize
-    document.getElementById('11thBtn').classList.add('active');
-    render('11th');
+    clearActiveTabs();
+    document.getElementById("tab-11th").classList.add("active");
+    renderCards("11th");
+    Object.entries(tabMap).forEach(([id,cat]) => {
+      document.getElementById(id).addEventListener("click", () => {
+        clearActiveTabs();
+        document.getElementById(id).classList.add("active");
+        renderCards(cat);
+      });
+    });
   </script>
 </body>
 </html>
