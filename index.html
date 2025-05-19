@@ -4,41 +4,26 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PWiansZone – Select Exam</title>
-  <!-- Google Fonts: Poppins & Material Icons -->
-  <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
-    rel="stylesheet"
-  />
-  <link
-    href="https://fonts.googleapis.com/icon?family=Material+Icons"
-    rel="stylesheet"
-  />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
   <style>
-    /*─────────────────────────────────────────────────────────────────────────
-      1. DESIGN TOKENS (COLORS, TYPOGRAPHY, SPACING, TRANSITIONS)
-    ──────────────────────────────────────────────────────────────────────────*/
     :root {
-      /* COLOR PALETTE */
-      --clr-primary: #1e40af;        /* Deep Indigo */
-      --clr-accent: #2563eb;         /* Vibrant Blue */
-      --clr-bg: #f3f4f6;             /* Very Light Gray */
-      --clr-surface: #ffffff;        /* White surfaces/cards */
-      --clr-text: #1f2937;           /* Dark Gray */
-      --clr-text-secondary: #4b5563; /* Slate Gray */
-      --clr-border: #e5e7eb;         /* Light Gray */
+      --clr-primary: #1e40af;
+      --clr-accent: #2563eb;
+      --clr-bg: #f3f4f6;
+      --clr-surface: #ffffff;
+      --clr-text: #1f2937;
+      --clr-text-secondary: #4b5563;
+      --clr-border: #e5e7eb;
       --clr-shadow: rgba(0, 0, 0, 0.05);
-
-      /* TYPOGRAPHY */
       --ff-base: "Poppins", sans-serif;
-      --fs-sm: 0.875rem;   /* 14px */
-      --fs-base: 1rem;     /* 16px */
-      --fs-lg: 1.125rem;   /* 18px */
-      --fs-xl: 2rem;       /* 32px */
+      --fs-sm: 0.875rem;
+      --fs-base: 1rem;
+      --fs-lg: 1.125rem;
+      --fs-xl: 2rem;
       --fw-regular: 400;
       --fw-semibold: 600;
       --fw-bold: 700;
-
-      /* SPACING SCALE */
       --space-xxs: 4px;
       --space-xs: 8px;
       --space-sm: 12px;
@@ -46,29 +31,18 @@
       --space-lg: 24px;
       --space-xl: 32px;
       --space-xxl: 48px;
-
-      /* BORDER RADIUS */
       --radius-sm: 4px;
       --radius-md: 8px;
       --radius-lg: 12px;
       --radius-round: 50%;
-
-      /* SHADOWS */
       --shadow-light: 0 1px 3px var(--clr-shadow);
       --shadow-medium: 0 4px 12px var(--clr-shadow);
-
-      /* TRANSITIONS & EASING */
       --trans-fast: 0.2s ease-in-out;
       --trans-medium: 0.4s ease-in-out;
       --ease-std: cubic-bezier(0.4, 0, 0.2, 1);
-
-      /* ANIMATION DELAY STEP */
       --delay-step: 0.1s;
     }
 
-    /*─────────────────────────────────────────────────────────────────────────
-      2. GLOBAL RESET & BASE STYLES
-    ──────────────────────────────────────────────────────────────────────────*/
     *,
     *::before,
     *::after {
@@ -113,9 +87,6 @@
       color: inherit;
     }
 
-    /*─────────────────────────────────────────────────────────────────────────
-      3. STICKY HEADER (LOGO + UNLOCK BUTTON)
-    ──────────────────────────────────────────────────────────────────────────*/
     header.header {
       position: sticky;
       top: 0;
@@ -142,7 +113,6 @@
       letter-spacing: 1px;
     }
 
-    /* Unlock Button in Header */
     .unlock-btn {
       display: flex;
       align-items: center;
@@ -153,9 +123,8 @@
       padding: var(--space-sm) var(--space-lg);
       border-radius: var(--radius-md);
       box-shadow: var(--shadow-light);
-      transition:
-        background-color var(--trans-fast) var(--ease-std),
-        box-shadow var(--trans-fast) var(--ease-std);
+      transition: background-color var(--trans-fast) var(--ease-std),
+                  box-shadow var(--trans-fast) var(--ease-std);
     }
     .unlock-btn:hover {
       background-color: var(--clr-primary);
@@ -166,9 +135,6 @@
       margin-right: var(--space-xs);
     }
 
-    /*─────────────────────────────────────────────────────────────────────────
-      4. MAIN CONTENT CONTAINER
-    ──────────────────────────────────────────────────────────────────────────*/
     .main {
       flex: 1;
       max-width: 960px;
@@ -176,9 +142,6 @@
       padding: var(--space-xxl) var(--space-md);
     }
 
-    /*─────────────────────────────────────────────────────────────────────────
-      5. SELECT EXAM SECTION (TABS + LOCK ICON)
-    ──────────────────────────────────────────────────────────────────────────*/
     .select-exam {
       margin-bottom: var(--space-xxl);
     }
@@ -204,11 +167,10 @@
       padding: var(--space-sm) var(--space-xl);
       border: 2px solid var(--clr-border);
       border-radius: var(--radius-md);
-      transition:
-        background-color var(--trans-fast) var(--ease-std),
-        border-color var(--trans-fast) var(--ease-std),
-        color var(--trans-fast) var(--ease-std),
-        box-shadow var(--trans-fast) var(--ease-std);
+      transition: background-color var(--trans-fast) var(--ease-std),
+                  border-color var(--trans-fast) var(--ease-std),
+                  color var(--trans-fast) var(--ease-std),
+                  box-shadow var(--trans-fast) var(--ease-std);
     }
     .tabs button:hover {
       background-color: var(--clr-bg);
@@ -221,7 +183,6 @@
       transform: translateY(-2px);
     }
 
-    /* Lock icon next to tabs on desktop */
     .lock-desktop {
       display: flex;
       align-items: center;
@@ -231,15 +192,14 @@
       background-color: var(--clr-surface);
       border: 2px solid var(--clr-border);
       border-radius: var(--radius-md);
-      width: 48px;
-      height: 48px;
+      width: 64px;
+      height: 64px;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition:
-        background-color var(--trans-fast) var(--ease-std),
-        border-color var(--trans-fast) var(--ease-std),
-        box-shadow var(--trans-fast) var(--ease-std);
+      transition: background-color var(--trans-fast) var(--ease-std),
+                  border-color var(--trans-fast) var(--ease-std),
+                  box-shadow var(--trans-fast) var(--ease-std);
     }
     .lock-desktop .icon-btn.click-animate {
       animation: clickScale 0.6s ease-in-out forwards;
@@ -255,46 +215,10 @@
       box-shadow: var(--shadow-light);
     }
     .lock-desktop .icon-btn .material-icons {
-      font-size: 24px;
+      font-size: 32px;
       color: var(--clr-text-secondary);
     }
 
-    /* Lock icon below tabs on mobile */
-    .lock-mobile {
-      display: none;
-      justify-content: center;
-      margin-bottom: var(--space-lg);
-    }
-    .lock-mobile .icon-btn {
-      background-color: var(--clr-surface);
-      border: 2px solid var(--clr-border);
-      border-radius: var(--radius-md);
-      width: 48px;
-      height: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition:
-        background-color var(--trans-fast) var(--ease-std),
-        border-color var(--trans-fast) var(--ease-std),
-        box-shadow var(--trans-fast) var(--ease-std);
-    }
-    .lock-mobile .icon-btn.click-animate {
-      animation: clickScale 0.6s ease-in-out forwards;
-    }
-    .lock-mobile .icon-btn:hover {
-      background-color: var(--clr-surface);
-      border-color: var(--clr-border);
-      box-shadow: var(--shadow-light);
-    }
-    .lock-mobile .icon-btn .material-icons {
-      font-size: 24px;
-      color: var(--clr-text-secondary);
-    }
-
-    /*─────────────────────────────────────────────────────────────────────────
-      6. FLASH‐CARD GRID & CARD STYLES
-    ──────────────────────────────────────────────────────────────────────────*/
     .flash-container {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -317,13 +241,11 @@
       overflow: hidden;
       opacity: 0;
       transform: translateY(20px);
-      transition:
-        transform var(--trans-medium) var(--ease-std),
-        box-shadow var(--trans-medium) var(--ease-std);
+      transition: transform var(--trans-medium) var(--ease-std),
+                  box-shadow var(--trans-medium) var(--ease-std);
       animation: fadeInUp 0.4s var(--ease-std) forwards;
     }
 
-    /* Slight “shine” overlay on hover */
     .flash-card::before {
       content: "";
       position: absolute;
@@ -331,12 +253,7 @@
       left: -50%;
       width: 200%;
       height: 200%;
-      background: linear-gradient(
-        120deg,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(255, 255, 255, 0.1) 50%,
-        rgba(255, 255, 255, 0) 100%
-      );
+      background: linear-gradient(120deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0) 100%);
       transform: rotate(45deg) translateX(-200%);
       transition: transform 0.8s var(--ease-std);
       pointer-events: none;
@@ -350,7 +267,6 @@
       transform: translateY(-4px);
     }
 
-    /* Staggered fadeInUp delays */
     .flash-card[data-index="1"] { animation-delay: var(--delay-step); }
     .flash-card[data-index="2"] { animation-delay: calc(var(--delay-step) * 2); }
     .flash-card[data-index="3"] { animation-delay: calc(var(--delay-step) * 3); }
@@ -368,9 +284,6 @@
       }
     }
 
-    /*─────────────────────────────────────────────────────────────────────────
-      7. OVERLAY FOR “UNLOCKING…” 
-    ──────────────────────────────────────────────────────────────────────────*/
     #overlay {
       position: fixed;
       top: 0; left: 0;
@@ -381,30 +294,34 @@
       justify-content: center;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.6s ease-in-out;
       z-index: 200;
     }
-    #overlay.visible {
-      opacity: 1;
+    #overlay.overlay-anim {
+      animation: overlayFade 1s ease-in-out forwards;
       pointer-events: auto;
+    }
+    @keyframes overlayFade {
+      0%   { opacity: 0; }
+      20%  { opacity: 0.9; }
+      80%  { opacity: 0.9; }
+      100% { opacity: 0; }
     }
     #overlayText {
       font-size: 2.5rem;
       font-weight: var(--fw-bold);
       color: var(--clr-primary);
+      opacity: 0;
     }
-    /* Text scaling + fade animation over 0.8s */
-    #overlayText.animate {
-      animation: textScaleFade 0.8s ease-in-out forwards;
+    #overlay.overlay-anim #overlayText {
+      animation: textFade 1s ease-in-out forwards;
     }
-    @keyframes textScaleFade {
-      0%   { transform: scale(1); opacity: 1; }
-      100% { transform: scale(1.5); opacity: 0; }
+    @keyframes textFade {
+      0%   { opacity: 0; transform: scale(0.8); }
+      20%  { opacity: 1; transform: scale(1); }
+      80%  { opacity: 1; transform: scale(1); }
+      100% { opacity: 0; transform: scale(1.2); }
     }
 
-    /*─────────────────────────────────────────────────────────────────────────
-      8. TOAST NOTIFICATION (auto‐hides after 5 s)
-    ──────────────────────────────────────────────────────────────────────────*/
     #toast {
       position: fixed;
       bottom: var(--space-lg);
@@ -437,26 +354,16 @@
       animation: progressBar 5s linear forwards;
     }
     @keyframes progressBar {
-      to {
-        width: 0;
-      }
+      to { width: 0; }
     }
 
-    /*─────────────────────────────────────────────────────────────────────────
-      9. ACCESSIBILITY & FOCUS STATES
-    ──────────────────────────────────────────────────────────────────────────*/
     button:focus,
     a:focus {
       outline: 3px solid var(--clr-accent);
       outline-offset: 2px;
     }
 
-    /*─────────────────────────────────────────────────────────────────────────
-      10. RESPONSIVE BREAKPOINTS (≤ 768px)
-    ──────────────────────────────────────────────────────────────────────────*/
     @media (max-width: 768px) {
-      /* Header button text changes: see JS */
-      /* Tabs: wrap, smaller text/padding */
       .tabs {
         gap: var(--space-sm);
       }
@@ -464,16 +371,9 @@
         font-size: var(--fs-sm);
         padding: var(--space-xs) var(--space-md);
       }
-
-      /* Lock icon below tabs (desktop lock hidden) */
       .lock-desktop {
         display: none;
       }
-      .lock-mobile {
-        display: flex;
-      }
-
-      /* Flash cards: smaller grid */
       .flash-container {
         grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
         gap: var(--space-md);
@@ -485,74 +385,46 @@
     }
   </style>
 </head>
+
 <body>
-  <!--─────────────────────────────────────────────────────────────────────────
-    1. HEADER (LOGO + UNLOCK BUTTON)
-  ──────────────────────────────────────────────────────────────────────────-->
   <header class="header">
     <div class="container">
       <div class="logo">PWiansZone</div>
-      <button id="unlockHeaderBtn" class="unlock-btn">
+      <button id="unlockHeaderBtn" class="unlock-btn" aria-label="Unlock Access">
         <span class="material-icons">lock_open</span>
         Unlock Access
       </button>
     </div>
   </header>
 
-  <!--─────────────────────────────────────────────────────────────────────────
-    2. OVERLAY FOR “UNLOCKING…” AND CARD CLICK
-  ──────────────────────────────────────────────────────────────────────────-->
-  <div id="overlay">
+  <div id="overlay" aria-hidden="true">
     <span id="overlayText">Unlocking…</span>
   </div>
 
-  <!--─────────────────────────────────────────────────────────────────────────
-    3. MAIN CONTENT
-  ──────────────────────────────────────────────────────────────────────────-->
   <main class="main">
-    <!-- Select Exam Section -->
     <section class="select-exam" aria-labelledby="selectExamHeading">
-      <h2
-        id="selectExamHeading"
-        style="font-size: var(--fs-xl); font-weight: var(--fw-bold);
-               text-align:center; margin-bottom: var(--space-lg);"
-      >
+      <h2 id="selectExamHeading" style="font-size: var(--fs-xl); font-weight: var(--fw-bold); text-align:center; margin-bottom: var(--space-lg);">
         Select Your Exam
       </h2>
-
-      <!-- Tabs + Lock Icon -->
       <div class="controls">
-        <!-- Category Tabs -->
-        <div class="tabs" aria-label="Exam categories">
-          <button id="tab-11th" class="tab-btn active">11th Grade</button>
-          <button id="tab-12th" class="tab-btn">12th Grade</button>
-          <button id="tab-dropper" class="tab-btn">Dropper</button>
+        <div class="tabs" role="tablist" aria-label="Exam categories">
+          <button id="tab-11th" class="tab-btn active" role="tab" aria-selected="true">11th Grade</button>
+          <button id="tab-12th" class="tab-btn" role="tab" aria-selected="false">12th Grade</button>
+          <button id="tab-dropper" class="tab-btn" role="tab" aria-selected="false">Dropper</button>
         </div>
-        <!-- Lock Icon (desktop) -->
         <div class="lock-desktop">
           <button id="lockBtnDesktop" class="icon-btn" aria-label="Generate or Unlock Access Key">
             <span class="material-icons">lock</span>
           </button>
         </div>
       </div>
-
-      <!-- Lock Icon (mobile, under tabs) -->
-      <div class="lock-mobile">
-        <button id="lockBtnMobile" class="icon-btn" aria-label="Generate or Unlock Access Key">
-          <span class="material-icons">lock</span>
-        </button>
-      </div>
     </section>
 
-    <!-- Exam Cards Grid -->
     <section class="flash-container" id="flashContainer" aria-live="polite">
-      <!-- Dynamically populated by JS -->
+      <!-- Cards are generated here by JavaScript -->
     </section>
   </main>
 
-  <!--─────────────────────────────────────────────────────────────────────────
-    4. TOAST NOTIFICATION
-  ──────────────────────────────────────────────────────────────────────────-->
   <div id="toast" role="alert" aria-live="assertive">
     <span class="material-icons">notifications</span>
     <span id="toastText"></span>
@@ -560,21 +432,20 @@
   </div>
 
   <script>
-    /*─────────────────────────────────────────────────────────────────────────
-      A. CONSTANTS & ACCESS KEY EXPIRATION
-    ──────────────────────────────────────────────────────────────────────────*/
-    const EXP_MS = 12 * 60 * 60 * 1000; // 12 hours
-    const storedTs = +localStorage.getItem("keyTimestamp");
-    if (storedTs && Date.now() - storedTs > EXP_MS) {
+    const EXP_MS = 12 * 60 * 60 * 1000;
+    const rawTs = localStorage.getItem("keyTimestamp");
+    const storedTs = rawTs ? parseInt(rawTs, 10) : null;
+
+    if (storedTs !== null && Date.now() - storedTs > EXP_MS) {
       localStorage.removeItem("keyID");
       localStorage.removeItem("keyTimestamp");
     }
 
-    /*─────────────────────────────────────────────────────────────────────────
-      B. TOAST LOGIC (SHOW & AUTO‐HIDE)
-    ──────────────────────────────────────────────────────────────────────────*/
     const toast = document.getElementById("toast");
     const toastText = document.getElementById("toastText");
+    const overlay = document.getElementById("overlay");
+    const overlayText = document.getElementById("overlayText");
+
     function showToast(message) {
       toastText.textContent = message;
       toast.classList.add("visible");
@@ -584,8 +455,9 @@
     }
 
     window.addEventListener("load", () => {
+      overlay.classList.remove("overlay-anim");
       const keyID = localStorage.getItem("keyID");
-      if (keyID) {
+      if (keyID && storedTs !== null) {
         const remaining = Math.max(EXP_MS - (Date.now() - storedTs), 0);
         const hrs = Math.floor(remaining / 3600000);
         const mins = Math.floor((remaining % 3600000) / 60000);
@@ -596,11 +468,6 @@
       updateUnlockButtonText();
     });
 
-    /*─────────────────────────────────────────────────────────────────────────
-      C. UPDATE HEADER BUTTON TEXT ON RESIZE
-       - On <768px: “Locked” or “Unlocked”
-       - On ≥768px: “Unlock Access” or “Access Unlocked”
-    ──────────────────────────────────────────────────────────────────────────*/
     const unlockHeaderBtn = document.getElementById("unlockHeaderBtn");
 
     function updateUnlockButtonText() {
@@ -609,49 +476,54 @@
       unlockHeaderBtn.innerHTML = "";
       let text, iconHtml = "";
       if (isUnlocked) {
+        iconHtml = '<span class="material-icons">lock_open</span>&nbsp;';
         text = w < 768 ? "Unlocked" : "Access Unlocked";
       } else {
+        iconHtml = '<span class="material-icons">lock</span>&nbsp;';
         text = w < 768 ? "Locked" : "Unlock Access";
-        iconHtml = '<span class="material-icons">lock_open</span>&nbsp;';
       }
       unlockHeaderBtn.insertAdjacentHTML("beforeend", iconHtml + text);
     }
+
     window.addEventListener("resize", updateUnlockButtonText);
 
-    /*─────────────────────────────────────────────────────────────────────────
-      D. HEADER & TAB ROW UNLOCK BUTTONS (WITH CLICK ANIMATION & OVERLAY)
-    ──────────────────────────────────────────────────────────────────────────*/
     const lockBtnDesktop = document.getElementById("lockBtnDesktop");
-    const lockBtnMobile  = document.getElementById("lockBtnMobile");
-    const overlay        = document.getElementById("overlay");
-    const overlayText    = document.getElementById("overlayText");
 
     function updateLockIcons() {
-      if (localStorage.getItem("keyID")) {
+      const isUnlocked = !!localStorage.getItem("keyID");
+      if (isUnlocked) {
         updateUnlockButtonText();
         lockBtnDesktop.querySelector(".material-icons").textContent = "lock_open";
-        lockBtnMobile.querySelector(".material-icons").textContent  = "lock_open";
+      } else {
+        lockBtnDesktop.querySelector(".material-icons").textContent = "lock";
       }
     }
     updateLockIcons();
 
     function handleLockClick(evt) {
-      if (localStorage.getItem("keyID")) return; // already unlocked
-      evt.currentTarget.classList.add("click-animate");
-      overlay.classList.add("visible");
+      if (localStorage.getItem("keyID")) return;
+      const btn = evt.currentTarget;
+      btn.classList.add("click-animate");
+      btn.addEventListener(
+        "animationend",
+        () => btn.classList.remove("click-animate"),
+        { once: true }
+      );
+      overlay.classList.add("overlay-anim");
       overlayText.textContent = "Unlocking…";
-      overlayText.classList.add("animate");
-      setTimeout(() => {
-        location.href = "key.html";
-      }, 800);
+      overlay.addEventListener(
+        "animationend",
+        () => {
+          overlay.classList.remove("overlay-anim");
+          location.href = "key.html";
+        },
+        { once: true }
+      );
     }
-    unlockHeaderBtn.addEventListener("click", handleLockClick);
-    lockBtnDesktop .addEventListener("click", handleLockClick);
-    lockBtnMobile  .addEventListener("click", handleLockClick);
 
-    /*─────────────────────────────────────────────────────────────────────────
-      E. EXAM BATCH DATA
-    ──────────────────────────────────────────────────────────────────────────*/
+    unlockHeaderBtn.addEventListener("click", handleLockClick);
+    lockBtnDesktop.addEventListener("click", handleLockClick);
+
     const batches = {
       "11th": [{ label: "Arjuna JEE 1.0", url: "Arjunajeetests.html" }],
       "12th": [
@@ -661,9 +533,6 @@
       dropper: [{ label: "Prayas JEE 1.0", url: "prayasjeetests.html" }]
     };
 
-    /*─────────────────────────────────────────────────────────────────────────
-      F. SELECT EXAM TAB & CARD RENDER LOGIC
-    ──────────────────────────────────────────────────────────────────────────*/
     const tabMap = {
       "tab-11th": "11th",
       "tab-12th": "12th",
@@ -673,7 +542,10 @@
     const flashContainer = document.getElementById("flashContainer");
 
     function clearActiveTabs() {
-      tabButtons.forEach(btn => btn.classList.remove("active"));
+      tabButtons.forEach(btn => {
+        btn.classList.remove("active");
+        btn.setAttribute("aria-selected", "false");
+      });
     }
 
     function renderCards(category) {
@@ -685,35 +557,43 @@
         card.setAttribute("data-index", idx + 1);
         card.tabIndex = 0;
         card.textContent = item.label;
-
+        card.setAttribute("role", "button");
+        card.setAttribute("aria-pressed", "false");
         card.addEventListener("click", () => {
-          overlay.classList.add("visible");
+          overlay.classList.add("overlay-anim");
           overlayText.textContent = item.label;
-          overlayText.classList.add("animate");
-          setTimeout(() => {
-            const dest = localStorage.getItem("keyID") ? item.url : "visit.html";
-            location.href = dest;
-          }, 800);
+          overlay.addEventListener(
+            "animationend",
+            () => {
+              overlay.classList.remove("overlay-anim");
+              const dest = localStorage.getItem("keyID") ? item.url : "visit.html";
+              location.href = dest;
+            },
+            { once: true }
+          );
         });
-
         card.addEventListener("keydown", e => {
-          if (e.key === "Enter" || e.key === " ") card.click();
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            card.click();
+          }
         });
-
         flashContainer.appendChild(card);
       });
     }
 
-    // Initialize default tab
     clearActiveTabs();
-    document.getElementById("tab-11th").classList.add("active");
+    const initialTab = document.getElementById("tab-11th");
+    initialTab.classList.add("active");
+    initialTab.setAttribute("aria-selected", "true");
     renderCards("11th");
 
-    // Wire up tab clicks
     Object.entries(tabMap).forEach(([tabId, category]) => {
-      document.getElementById(tabId).addEventListener("click", () => {
+      const tabBtn = document.getElementById(tabId);
+      tabBtn.addEventListener("click", () => {
         clearActiveTabs();
-        document.getElementById(tabId).classList.add("active");
+        tabBtn.classList.add("active");
+        tabBtn.setAttribute("aria-selected", "true");
         renderCards(category);
       });
     });
