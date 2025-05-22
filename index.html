@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Site Under Maintenance</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.4/lottie.min.js"></script>
   <style>
     * {
       box-sizing: border-box;
@@ -24,7 +25,7 @@
       padding: 20px;
     }
 
-    img {
+    #animationContainer {
       width: 300px;
       max-width: 90%;
       margin-bottom: 30px;
@@ -51,20 +52,28 @@
         font-size: 1rem;
       }
 
-      img {
+      #animationContainer {
         width: 250px;
       }
     }
   </style>
 </head>
 <body>
-  <!-- Replace this with a modern animated illustration -->
-  <img src="https://assets9.lottiefiles.com/packages/lf20_4kx2q32n.json" alt="Maintenance Animation" />
+  <div id="animationContainer"></div>
 
   <h1>We're Doing Some Work</h1>
   <p>Our site is temporarily unavailable while we perform maintenance. We’ll be back online soon. Thanks for your patience!</p>
 
   <script>
+    // Load the Lottie animation
+    lottie.loadAnimation({
+      container: document.getElementById('animationContainer'),
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      path: './Animation - 1747580268171.json' // Make sure this file is hosted correctly
+    });
+
     // Prevent back navigation
     history.pushState(null, null, window.location.href);
     window.onpopstate = function () {
