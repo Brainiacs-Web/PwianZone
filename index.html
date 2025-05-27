@@ -5,10 +5,7 @@
   <title>Site Under Maintenance</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Favicon -->
   <link rel="icon" type="image/png" href="https://i.postimg.cc/ZRDtF9zg/eb2d5ebe-7cd8-4c12-86c7-1a3057f0dc1e-removebg-preview-1-modified.png" />
-
-  <!-- Lottie -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.4/lottie.min.js"></script>
 
   <style>
@@ -21,7 +18,6 @@
       min-height: 100vh; text-align: center;
       padding: 20px;
     }
-
     #animationContainer { width: 300px; max-width: 90%; margin-bottom: 30px; }
     h1 { font-size: 2rem; margin-bottom: 1em; color: #1a202c; }
     .announcement { font-size: 1.2rem; color: #4a5568; max-width: 600px; line-height: 1.6; }
@@ -95,12 +91,12 @@
     <div class="modal-content">
       <span class="close">&times;</span>
       <h2>Help & Support</h2>
-      <form id="helpForm" action="https://formspree.io/f/manorwzlform" method="POST">
+      <form action="https://formspree.io/f/manorwzl" method="POST">
         <label for="studentName">Student’s Name</label>
         <input type="text" id="studentName" name="studentName" required>
 
         <label for="studentEmail">Student’s Email ID</label>
-        <input type="email" id="studentEmail" name="studentEmail" required>
+        <input type="email" id="studentEmail" name="email" required>
 
         <label for="helpType">Type</label>
         <select id="helpType" name="helpType" required>
@@ -119,7 +115,6 @@
   </div>
 
   <script>
-    // Load Lottie animation
     lottie.loadAnimation({
       container: document.getElementById('animationContainer'),
       renderer: 'svg',
@@ -132,41 +127,13 @@
     history.pushState(null, null, location.href);
     window.onpopstate = () => history.go(1);
 
-    // Modal open/close logic
+    // Modal logic
     const helpBtn = document.getElementById('helpBtn'),
-          modal = document.getElementById('helpModal'),
+          modal   = document.getElementById('helpModal'),
           closeBtn = modal.querySelector('.close');
-
-    helpBtn.onclick = () => modal.style.display = 'flex';
+    helpBtn.onclick  = () => modal.style.display = 'flex';
     closeBtn.onclick = () => modal.style.display = 'none';
-    window.onclick = e => { if (e.target === modal) modal.style.display = 'none'; };
-
-    // Formspree form submission with fetch to prevent page reload
-    document.getElementById('helpForm').addEventListener('submit', async e => {
-      e.preventDefault();
-      const form = e.target;
-      const data = new FormData(form);
-      const action = form.action;
-
-      try {
-        const response = await fetch(action, {
-          method: 'POST',
-          body: data,
-          headers: { 'Accept': 'application/json' }
-        });
-
-        if (response.ok) {
-          alert('Your message has been sent successfully!');
-          form.reset();
-          modal.style.display = 'none';
-        } else {
-          alert('Oops! There was a problem submitting your form.');
-        }
-      } catch (error) {
-        alert('Oops! There was a problem submitting your form.');
-        console.error('Formspree submission error:', error);
-      }
-    });
+    window.onclick   = e => { if (e.target === modal) modal.style.display = 'none'; };
   </script>
 </body>
 </html>
