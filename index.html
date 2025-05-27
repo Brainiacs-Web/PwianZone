@@ -1,19 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Site Under Maintenance</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- Favicon -->
-  <link rel="icon" type="image/png" href="https://i.postimg.cc/ZRDtF9zg/eb2d5ebe-7cd8-4c12-86c7-1a3057f0dc1e-removebg-preview-1-modified.png">
+  <link rel="icon" type="image/png" href="https://i.postimg.cc/ZRDtF9zg/eb2d5ebe-7cd8-4c12-86c7-1a3057f0dc1e-removebg-preview-1-modified.png" />
+
   <!-- Lottie -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.4/lottie.min.js"></script>
-  <!-- Google API client -->
-  <script src="https://apis.google.com/js/api.js"></script>
 
   <style>
-    /* RESET & BASE */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -24,17 +22,16 @@
       padding: 20px;
     }
 
-    /* MAINTENANCE CONTENT */
-    #animationContainer { width:300px; max-width:90%; margin-bottom:30px; }
-    h1 { font-size:2rem; margin-bottom:1em; color:#1a202c; }
-    .announcement { font-size:1.2rem; color:#4a5568; max-width:600px; line-height:1.6; }
-    @media (max-width:600px) {
-      h1 { font-size:1.6rem; }
-      .announcement { font-size:1rem; }
-      #animationContainer { width:250px; }
+    #animationContainer { width: 300px; max-width: 90%; margin-bottom: 30px; }
+    h1 { font-size: 2rem; margin-bottom: 1em; color: #1a202c; }
+    .announcement { font-size: 1.2rem; color: #4a5568; max-width: 600px; line-height: 1.6; }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.6rem; }
+      .announcement { font-size: 1rem; }
+      #animationContainer { width: 250px; }
     }
 
-    /* HELP BUTTON */
     #helpBtn {
       position: fixed; top: 20px; right: 20px;
       background: #3182ce; border: none; border-radius: 50%;
@@ -43,62 +40,62 @@
       align-items: center; justify-content: center;
       box-shadow: 0 2px 6px rgba(0,0,0,0.2);
     }
-    #helpBtn svg { fill: #fff; width:24px; height:24px; }
+    #helpBtn svg { fill: #fff; width: 24px; height: 24px; }
 
-    /* MODAL */
     .modal {
       display: none; position: fixed; z-index: 1000;
-      left: 0; top: 0; width:100%; height:100%;
-      background: rgba(0,0,0,0.5); align-items: center;
-      justify-content: center;
+      left: 0; top: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5); align-items: center; justify-content: center;
     }
     .modal-content {
       background: #fff; padding: 20px; border-radius: 8px;
       width: 90%; max-width: 400px; position: relative;
     }
     .modal-content h2 { margin-bottom: 15px; }
-    .modal-content label { display: block; margin-top:10px; }
+    .modal-content label { display: block; margin-top: 10px; }
     .modal-content input,
     .modal-content select,
     .modal-content textarea,
     .modal-content button {
-      width:100%; padding:8px; margin-top:5px;
-      border:1px solid #ccc; border-radius:4px;
+      width: 100%; padding: 8px; margin-top: 5px;
+      border: 1px solid #ccc; border-radius: 4px;
       font-family: inherit;
     }
     .modal-content textarea { min-height: 100px; resize: vertical; }
-    .modal-content button { background: #3182ce; color: #fff; border:none; margin-top:15px; cursor:pointer; }
+    .modal-content button {
+      background: #3182ce; color: #fff;
+      border: none; margin-top: 15px; cursor: pointer;
+    }
     .close {
-      position:absolute; top:10px; right:10px;
-      font-size:18px; cursor:pointer;
+      position: absolute; top: 10px; right: 10px;
+      font-size: 18px; cursor: pointer;
     }
   </style>
 </head>
 <body>
 
-  <!-- MAINTENANCE CONTENT -->
   <div id="animationContainer"></div>
   <h1>We're Currently Upgrading the Platform!</h1>
   <p class="announcement">
     We'll be back live on <strong>12th June at 1 PM</strong> with powerful new features, a better user experience, and full access to all Live batch tests.<br><br>Thank you for your patience!
   </p>
 
-  <!-- Help & Support Button -->
   <button id="helpBtn" title="Help & Support">
-    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10
-      10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm1.07-7.75
-      l-.9.92C12.45 13.9 12 14.5 12 16h-2v-.5c0-1 .45-1.99
-      1.17-2.68l1.24-1.26c.37-.36.59-.86.59-1.41
-      0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4
-      1.79 4 4c0 .88-.36 1.68-.93 2.25z"/></svg>
+    <svg viewBox="0 0 24 24">
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10
+        10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm1.07-7.75
+        l-.9.92C12.45 13.9 12 14.5 12 16h-2v-.5c0-1 .45-1.99
+        1.17-2.68l1.24-1.26c.37-.36.59-.86.59-1.41
+        0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4
+        1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+    </svg>
   </button>
 
-  <!-- Modal -->
   <div id="helpModal" class="modal">
     <div class="modal-content">
       <span class="close">&times;</span>
       <h2>Help & Support</h2>
-      <form id="helpForm">
+      <form id="helpForm" action="https://formspree.io/f/manorwzlform" method="POST">
         <label for="studentName">Student’s Name</label>
         <input type="text" id="studentName" name="studentName" required>
 
@@ -120,95 +117,56 @@
       </form>
     </div>
   </div>
-<footer style="text-align:center; padding:20px; font-size:14px; color:#666;">
-  <a href="https://www.termsfeed.com/live/1014ed10-e57f-404f-943a-42ab62518934" target="_blank" rel="noopener noreferrer">Privacy Policy</a> | 
-  <a href="https://https://www.termsfeed.com/live/4dbadc4a-2abe-423c-90aa-8c2913d459c5" target="_blank" rel="noopener noreferrer">Terms & Conditions</a>
-</footer>
 
   <script>
-  // 1) Lottie
-  lottie.loadAnimation({
-    container: document.getElementById('animationContainer'),
-    renderer: 'svg', loop: true, autoplay: true,
-    path: './Animation - 1747580268171.json'
-  });
-  // Prevent back navigation
-  history.pushState(null, null, location.href);
-  window.onpopstate = () => history.go(1);
-
-  // 2) Modal logic
-  const helpBtn = document.getElementById('helpBtn'),
-        modal   = document.getElementById('helpModal'),
-        closeBtn = modal.querySelector('.close');
-  helpBtn.onclick  = () => modal.style.display = 'flex';
-  closeBtn.onclick = () => modal.style.display = 'none';
-  window.onclick    = e => { if (e.target === modal) modal.style.display = 'none'; };
-
-  // 3) Google OAuth + Gmail send
-  const CLIENT_ID = '1023987689498-jme2l1us4mcdpc1016ihij0vnhh8olrd.apps.googleusercontent.com';
-  const SCOPES    = 'https://www.googleapis.com/auth/gmail.send';
-
-  function gapiLoaded() {
-    gapi.load('client:auth2', () => {
-      gapi.client.init({
-        clientId: CLIENT_ID,
-        discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest'],
-        scope: SCOPES
-      });
+    // Load Lottie animation
+    lottie.loadAnimation({
+      container: document.getElementById('animationContainer'),
+      renderer: 'svg',
+      loop: true,
+      autoplay: true,
+      path: './Animation - 1747580268171.json'
     });
-  }
-  if (window.gapi) {
-    gapiLoaded();
-  } else {
-    const s = document.createElement('script');
-    s.src = 'https://apis.google.com/js/api.js';
-    s.onload = gapiLoaded;
-    document.body.appendChild(s);
-  }
 
-  function makeRawEmail(to, from, subject, body) {
-    const str =
-      `From: ${from}\r\n` +
-      `To: ${to}\r\n` +
-      `Subject: ${subject}\r\n\r\n` +
-      body;
-    return btoa(unescape(encodeURIComponent(str)))
-      .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-  }
+    // Prevent back navigation
+    history.pushState(null, null, location.href);
+    window.onpopstate = () => history.go(1);
 
-  async function sendGmail(raw) {
-    const auth = gapi.auth2.getAuthInstance();
-    if (!auth.isSignedIn.get()) {
-      await auth.signIn();
-    }
-    return gapi.client.gmail.users.messages.send({
-      userId: 'me',
-      resource: { raw }
+    // Modal open/close logic
+    const helpBtn = document.getElementById('helpBtn'),
+          modal = document.getElementById('helpModal'),
+          closeBtn = modal.querySelector('.close');
+
+    helpBtn.onclick = () => modal.style.display = 'flex';
+    closeBtn.onclick = () => modal.style.display = 'none';
+    window.onclick = e => { if (e.target === modal) modal.style.display = 'none'; };
+
+    // Formspree form submission with fetch to prevent page reload
+    document.getElementById('helpForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const form = e.target;
+      const data = new FormData(form);
+      const action = form.action;
+
+      try {
+        const response = await fetch(action, {
+          method: 'POST',
+          body: data,
+          headers: { 'Accept': 'application/json' }
+        });
+
+        if (response.ok) {
+          alert('Your message has been sent successfully!');
+          form.reset();
+          modal.style.display = 'none';
+        } else {
+          alert('Oops! There was a problem submitting your form.');
+        }
+      } catch (error) {
+        alert('Oops! There was a problem submitting your form.');
+        console.error('Formspree submission error:', error);
+      }
     });
-  }
-
-  // 4) Form submission
-  document.getElementById('helpForm').addEventListener('submit', async e => {
-    e.preventDefault();
-    const name    = e.target.studentName.value.trim();
-    const from    = e.target.studentEmail.value.trim();
-    const type    = e.target.helpType.value;
-    const message = e.target.message.value.trim();
-    const to      = 'pwians.help@gmail.com';
-    const subject = `[${type}] from ${name}`;
-    const body    = `Name: ${name}\nEmail: ${from}\nType: ${type}\n\nMessage:\n${message}`;
-    const raw     = makeRawEmail(to, from, subject, body);
-
-    try {
-      await sendGmail(raw);
-      alert('Your message has been sent—thanks!');
-      modal.style.display = 'none';
-      e.target.reset();
-    } catch (err) {
-      console.error(err);
-      alert('Failed to send. Please ensure you granted Gmail send permission.');
-    }
-  });
   </script>
 </body>
 </html>
