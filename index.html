@@ -4,67 +4,125 @@
   <meta charset="UTF-8" />
   <title>Site Under Maintenance</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
   <link rel="icon" type="image/png" href="https://i.postimg.cc/ZRDtF9zg/eb2d5ebe-7cd8-4c12-86c7-1a3057f0dc1e-removebg-preview-1-modified.png" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.4/lottie.min.js"></script>
-
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #fefefe; color: #2d3748;
+      margin: 0; padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f6f9; color: #2d3748;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
       min-height: 100vh; text-align: center;
       padding: 20px;
-    }
-    #animationContainer { width: 300px; max-width: 90%; margin-bottom: 30px; }
-    h1 { font-size: 2rem; margin-bottom: 1em; color: #1a202c; }
-    .announcement { font-size: 1.2rem; color: #4a5568; max-width: 600px; line-height: 1.6; }
-
-    @media (max-width: 600px) {
-      h1 { font-size: 1.6rem; }
-      .announcement { font-size: 1rem; }
-      #animationContainer { width: 250px; }
+      overflow-x: hidden;
     }
 
-    #helpBtn {
-      position: fixed; top: 20px; right: 20px;
-      background: #3182ce; border: none; border-radius: 50%;
-      width: 48px; height: 48px;
-      cursor: pointer; display: flex;
-      align-items: center; justify-content: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    #animationContainer { width: 300px; margin-bottom: 30px; }
+
+    h1 {
+      font-size: 2rem; color: #1a202c; margin-bottom: 1rem;
     }
-    #helpBtn svg { fill: #fff; width: 24px; height: 24px; }
+
+    .announcement {
+      font-size: 1.1rem; max-width: 600px;
+      color: #4a5568; line-height: 1.6;
+    }
+
+    .glass-btn {
+      position: fixed; bottom: 20px; right: 20px;
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(10px);
+      border-radius: 50%;
+      width: 60px; height: 60px;
+      display: flex; align-items: center; justify-content: center;
+      border: none; cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      transition: background 0.3s ease;
+    }
+    .glass-btn img {
+      width: 32px;
+    }
+
+    .message-popup {
+      position: fixed; bottom: 90px; right: 20px;
+      background: #000; color: #fff;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      opacity: 0; transform: translateY(20px);
+      animation: slideIn 1s forwards;
+    }
+
+    @keyframes slideIn {
+      to { opacity: 1; transform: translateY(0); }
+    }
 
     .modal {
-      display: none; position: fixed; z-index: 1000;
-      left: 0; top: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5); align-items: center; justify-content: center;
+      display: none;
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      justify-content: center; align-items: center;
+      z-index: 1000;
     }
+
     .modal-content {
-      background: #fff; padding: 20px; border-radius: 8px;
-      width: 90%; max-width: 400px; position: relative;
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 420px;
+      position: relative;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+      animation: fadeIn 0.4s ease;
     }
-    .modal-content h2 { margin-bottom: 15px; }
-    .modal-content label { display: block; margin-top: 10px; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
     .modal-content input,
     .modal-content select,
-    .modal-content textarea,
-    .modal-content button {
-      width: 100%; padding: 8px; margin-top: 5px;
-      border: 1px solid #ccc; border-radius: 4px;
+    .modal-content textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
       font-family: inherit;
     }
-    .modal-content textarea { min-height: 100px; resize: vertical; }
+
     .modal-content button {
-      background: #3182ce; color: #fff;
-      border: none; margin-top: 15px; cursor: pointer;
+      width: 100%;
+      padding: 10px;
+      background: #3182ce;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
     }
+
     .close {
-      position: absolute; top: 10px; right: 10px;
-      font-size: 18px; cursor: pointer;
+      position: absolute; top: 10px; right: 15px;
+      font-size: 22px; font-weight: bold;
+      cursor: pointer; color: #aaa;
+    }
+
+    .success-message {
+      position: fixed;
+      bottom: 20px; left: 50%;
+      transform: translateX(-50%);
+      background: #38a169;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 14px;
+      z-index: 9999;
+      display: none;
     }
   </style>
 </head>
@@ -73,42 +131,47 @@
   <div id="animationContainer"></div>
   <h1>We're Currently Upgrading the Platform!</h1>
   <p class="announcement">
-    We'll be back live on <strong>12th June at 1 PM</strong> with powerful new features, a better user experience, and full access to all Live batch tests.<br><br>Thank you for your patience!
+    We'll be back live on <strong>12th June at 1 PM</strong> with new features, a better UI, and live tests.<br>Thanks for your patience!
   </p>
 
-  <button id="helpBtn" title="Help & Support">
-  <img src="https://i.postimg.cc/W3KGGd0W/support.png" alt="Help Icon" style="width: 28px; height: 28px;" />
-</button>
+  <button class="glass-btn" id="helpBtn" title="Help & Support">
+    <img src="https://i.postimg.cc/W3KGGd0W/support.png" alt="Support Icon" />
+  </button>
 
+  <div class="message-popup" id="infoMsg">If you have any concern, connect us</div>
 
-  <div id="helpModal" class="modal">
+  <div class="modal" id="helpModal">
     <div class="modal-content">
       <span class="close">&times;</span>
-      <h2>Help & Support</h2>
-      <form action="https://formspree.io/f/manorwzl" method="POST">
-        <label for="studentName">Student’s Name</label>
-        <input type="text" id="studentName" name="studentName" required>
+      <form id="supportForm" action="https://formspree.io/f/manorwzl" method="POST">
+        <label>Your Name</label>
+        <input type="text" name="name" required>
 
-        <label for="studentEmail">Student’s Email ID</label>
-        <input type="email" id="studentEmail" name="email" required>
+        <label>Your Email</label>
+        <input type="email" name="email" required>
 
-        <label for="helpType">Type</label>
-        <select id="helpType" name="helpType" required>
-          <option value="">-- Select --</option>
-          <option value="Query">Query</option>
-          <option value="Request">Request</option>
-          <option value="Problem">Problem</option>
+        <label>Type</label>
+        <select name="type" required>
+          <option value="">Select</option>
+          <option>Query</option>
+          <option>Request</option>
+          <option>Problem</option>
         </select>
 
-        <label for="message">Your Message</label>
-        <textarea id="message" name="message" placeholder="Describe your query/request/problem…" required></textarea>
+        <label>Your Message</label>
+        <textarea name="message" required placeholder="Describe your issue…"></textarea>
 
         <button type="submit">Submit</button>
       </form>
     </div>
   </div>
 
+  <div class="success-message" id="successMsg">
+    ✅ Message submitted. We will respond within 24 hours.
+  </div>
+
   <script>
+    // Lottie load
     lottie.loadAnimation({
       container: document.getElementById('animationContainer'),
       renderer: 'svg',
@@ -117,17 +180,56 @@
       path: './Animation - 1747580268171.json'
     });
 
-    // Prevent back navigation
-    history.pushState(null, null, location.href);
-    window.onpopstate = () => history.go(1);
+    // Show popup message on load
+    window.onload = () => {
+      document.getElementById('infoMsg').style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('infoMsg').style.display = 'none';
+      }, 5000);
+    };
 
-    // Modal logic
-    const helpBtn = document.getElementById('helpBtn'),
-          modal   = document.getElementById('helpModal'),
-          closeBtn = modal.querySelector('.close');
-    helpBtn.onclick  = () => modal.style.display = 'flex';
-    closeBtn.onclick = () => modal.style.display = 'none';
-    window.onclick   = e => { if (e.target === modal) modal.style.display = 'none'; };
+    // Modal toggle
+    const modal = document.getElementById('helpModal');
+    document.getElementById('helpBtn').onclick = () => {
+      if (localStorage.getItem('supportSubTime')) {
+        const then = new Date(parseInt(localStorage.getItem('supportSubTime')));
+        const now = new Date();
+        const diff = now - then;
+        if (diff < 24 * 60 * 60 * 1000) {
+          alert("You have already raised a ticket. Please wait, it's in progress.");
+          return;
+        }
+      }
+      modal.style.display = 'flex';
+    };
+    document.querySelector('.close').onclick = () => modal.style.display = 'none';
+    window.onclick = e => { if (e.target === modal) modal.style.display = 'none'; };
+
+    // Form handler
+    document.getElementById('supportForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const form = e.target;
+      const data = new FormData(form);
+
+      fetch(form.action, {
+        method: 'POST',
+        body: data,
+        headers: { 'Accept': 'application/json' }
+      })
+      .then(response => {
+        if (response.ok) {
+          form.reset();
+          modal.style.display = 'none';
+          localStorage.setItem('supportSubTime', Date.now());
+          const msg = document.getElementById('successMsg');
+          msg.style.display = 'block';
+          setTimeout(() => msg.style.display = 'none', 5000);
+        } else {
+          alert('Form submission failed.');
+        }
+      })
+      .catch(() => alert('Form submission error.'));
+    });
   </script>
 </body>
 </html>
