@@ -4,7 +4,13 @@
   <meta charset="UTF-8">
   <title>Site Under Maintenance</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="https://i.postimg.cc/ZRDtF9zg/eb2d5ebe-7cd8-4c12-86c7-1a3057f0dc1e-removebg-preview-1-modified.png">
+  
+  <!-- Lottie Library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.7.4/lottie.min.js"></script>
+
   <style>
     * {
       box-sizing: border-box;
@@ -32,23 +38,24 @@
     }
 
     h1 {
-      font-size: 2.5rem;
-      margin-bottom: 0.5em;
+      font-size: 2rem;
+      margin-bottom: 1em;
       color: #1a202c;
     }
 
-    p {
+    .announcement {
       font-size: 1.2rem;
       color: #4a5568;
       max-width: 600px;
+      line-height: 1.6;
     }
 
     @media (max-width: 600px) {
       h1 {
-        font-size: 2rem;
+        font-size: 1.6rem;
       }
 
-      p {
+      .announcement {
         font-size: 1rem;
       }
 
@@ -59,10 +66,15 @@
   </style>
 </head>
 <body>
+
+  <!-- Lottie Animation -->
   <div id="animationContainer"></div>
 
-  <h1>We're Doing Some Work</h1>
-  <p>Our site is temporarily unavailable while we perform maintenance. We’ll be back online soon. Thanks for your patience!</p>
+  <!-- Main Message -->
+  <h1>We're Currently Upgrading the Platform!</h1>
+  <p class="announcement">
+    We'll be back live on <strong>12th June at 1 PM</strong> with powerful new features, a better user experience, and full access to all Live batch tests.<br><br>Thank you for your patience!
+  </p>
 
   <script>
     // Load the Lottie animation
